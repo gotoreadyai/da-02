@@ -34,7 +34,7 @@ export function DancersPage() {
   const dancers = data?.data || []
 
   return (
-    <div className="min-h-screen pb-8">
+    <div>
       <PageHeader title="Tancerze" subtitle="Odkryj w Twojej okolicy">
         {/* Search */}
         <div className="relative">

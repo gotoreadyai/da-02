@@ -32,7 +32,7 @@ export function EventDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center py-20">
         <Spinner size="lg" />
       </div>
     )
@@ -40,7 +40,7 @@ export function EventDetailPage() {
 
   if (isError || !event) {
     return (
-      <div className="min-h-screen px-5 pt-13">
+      <div className="px-5 pt-13">
         <button
           onClick={() => navigate(-1)}
           aria-label="Wroc"
@@ -66,7 +66,7 @@ export function EventDetailPage() {
   const gradient = getGradientForName(event.title)
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] pb-36">
+    <div className="bg-[var(--color-bg)] pb-36">
       {/* Hero */}
       <div className="relative h-[50vh] min-h-[320px] max-h-[400px]">
         <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>

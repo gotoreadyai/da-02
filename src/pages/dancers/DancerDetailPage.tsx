@@ -35,7 +35,7 @@ export function DancerDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center py-20">
         <Spinner size="lg" />
       </div>
     )
@@ -43,7 +43,7 @@ export function DancerDetailPage() {
 
   if (isError || !dancer) {
     return (
-      <div className="min-h-screen px-5 pt-13">
+      <div className="px-5 pt-13">
         <button
           onClick={() => navigate(-1)}
           aria-label="Wroc"
@@ -66,7 +66,7 @@ export function DancerDetailPage() {
   const gradient = getGradientForName(dancer.name)
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] pb-36">
+    <div className="bg-[var(--color-bg)] pb-36">
       {/* Hero */}
       <div className="relative h-[75vh] min-h-[480px] max-h-[640px]">
         {dancer.profile_photo_url ? (

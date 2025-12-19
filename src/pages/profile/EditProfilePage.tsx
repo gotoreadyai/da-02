@@ -82,7 +82,7 @@ export function EditProfilePage() {
   if (!profile) return null
 
   return (
-    <div className="min-h-screen pb-32">
+    <div className="pb-32">
       {/* Header */}
       <header className={LAYOUT.header}>
         <div className={cn('flex items-center mb-5', GAP.lg)}>

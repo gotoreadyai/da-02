@@ -26,7 +26,7 @@ export function ProfilePage() {
   ]
 
   return (
-    <div className="min-h-screen pb-8">
+    <div>
       <PageHeader title="Profil" subtitle="Twoje konto">
         <div className={cn('card-premium p-4', ROUNDED.card)}>
           <div className="flex items-center gap-4 mb-4">

@@ -64,7 +64,7 @@ export function ChatPage() {
   // Conversation list view
   if (!selectedConversation) {
     return (
-      <div className="min-h-screen pb-24">
+      <div>
         <PageHeader title="Czat" subtitle="Twoje konwersacje" />
 
         <section className={LAYOUT.sectionLast}>
@@ -125,10 +125,10 @@ export function ChatPage() {
     )
   }
 
-  // Chat view
+  // Chat view - fixed height without bottom nav padding
   return (
-    <div className="flex flex-col h-screen">
-      <header className="px-5 pt-13 pb-3 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-white">
+      <header className="sticky top-0 z-10 px-5 pt-13 pb-3 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
         <div className={cn('flex items-center', GAP.lg)}>
           <button onClick={handleBackToList} aria-label="Wroc" className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg)] flex items-center justify-center', ROUNDED.circle)}>
             <ArrowLeft className={cn(ICON.md, 'text-[var(--color-text-primary)]')} />

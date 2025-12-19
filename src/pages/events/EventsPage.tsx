@@ -28,7 +28,7 @@ export function EventsPage() {
   const events = data?.data || []
 
   return (
-    <div className="min-h-screen pb-8">
+    <div>
       <PageHeader title="Wydarzenia" subtitle="Odkryj w Twojej okolicy">
         {/* Search */}
         <div className={cn('relative', LAYOUT.sectionHeadingMargin)}>
