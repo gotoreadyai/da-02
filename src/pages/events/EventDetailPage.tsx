@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { DetailRow } from '@/components/events'
 import {
   ArrowLeft,
   MapPin,
@@ -21,15 +22,7 @@ import { toast } from 'sonner'
 import { useEvent, useRegisterForEvent } from '@/features/events/api'
 import { formatDate, formatTime, getEventTypeLabel, getSkillLevelLabel } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-
-// 2026 Gradient palette - VIBRANT
-const gradients = [
-  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]', // Sunset violet
-  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]', // Ocean to violet
-  'from-[#F97316] via-[#EF4444] to-[#EC4899]', // Fire
-  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]', // Teal dream
-  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]', // Pink to cyan
-]
+import { getGradientForName } from '@/lib/constants'
 
 const typeIcons: Record<string, React.ReactNode> = {
   lesson: <BookOpen className="w-5 h-5" />,
@@ -67,6 +60,7 @@ export function EventDetailPage() {
       <div className="min-h-screen px-4 pt-12">
         <button
           onClick={() => navigate(-1)}
+          aria-label="Wróć"
           className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -89,8 +83,7 @@ export function EventDetailPage() {
   const startDate = new Date(event.start_at)
   const isPast = startDate < new Date()
   const isFull = event.max_participants ? event.participant_count >= event.max_participants : false
-  const gradientIndex = event.title.charCodeAt(0) % gradients.length
-  const gradient = gradients[gradientIndex]
+  const gradient = getGradientForName(event.title)
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] pb-36">
@@ -112,6 +105,7 @@ export function EventDetailPage() {
         <div className="absolute top-0 left-0 right-0 pt-12 px-4 flex justify-between items-start">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Wróć"
             className="w-10 h-10 rounded-xl bg-black/20 backdrop-blur-md flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
@@ -266,6 +260,7 @@ export function EventDetailPage() {
           <button
             disabled={isFull || registerMutation.isPending}
             onClick={handleRegister}
+            aria-label={isFull ? 'Brak wolnych miejsc' : 'Zapisz się na wydarzenie'}
             className={cn(
               'w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all max-w-md mx-auto',
               isFull
@@ -291,39 +286,6 @@ export function EventDetailPage() {
           </button>
         </div>
       )}
-    </div>
-  )
-}
-
-// Compact detail row
-function DetailRow({
-  icon,
-  label,
-  value,
-  accent,
-  isLast,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-  accent?: boolean
-  isLast?: boolean
-}) {
-  return (
-    <div className={cn(
-      'flex items-center gap-3 px-4 py-3',
-      !isLast && 'border-b border-black/[0.03]'
-    )}>
-      <div className={cn(
-        'w-9 h-9 rounded-xl flex items-center justify-center',
-        accent ? 'bg-[var(--color-accent-hot)]/10 text-[var(--color-accent-hot)]' : 'bg-[var(--color-brand-lighter)] text-[var(--color-brand)]'
-      )}>
-        {icon}
-      </div>
-      <div className="flex-1">
-        <span className="text-caption text-[10px] uppercase tracking-wider">{label}</span>
-        <span className="text-headline-sm block">{value}</span>
-      </div>
     </div>
   )
 }

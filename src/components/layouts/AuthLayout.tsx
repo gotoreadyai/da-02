@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 
 export function AuthLayout() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC]">
+    <div className="min-h-screen gradient-brand">
       <div className="min-h-screen flex flex-col">
         {/* Logo area */}
         <div className="flex-1 flex items-center justify-center px-6 pt-14">

@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { Avatar } from '@/components/ui/Avatar'
 import { ArrowLeft, Send, MessageCircle } from 'lucide-react'
 import { useConversations, useMessages, useSendMessage, useMarkAsRead } from '@/features/chat/api'
 import { useAuthStore } from '@/lib/auth'
-import { formatRelativeTime, getInitials } from '@/lib/utils'
+import { formatRelativeTime } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function ChatPage() {
@@ -115,23 +116,15 @@ export function ChatPage() {
                 >
                   {/* Avatar */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-14 h-14 rounded-2xl overflow-hidden">
-                      {conv.other_user.profile_photo_url ? (
-                        <img
-                          src={conv.other_user.profile_photo_url}
-                          alt={conv.other_user.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                          <span className="text-lg font-light text-white/90">
-                            {getInitials(conv.other_user.name)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                    <Avatar
+                      src={conv.other_user.profile_photo_url}
+                      name={conv.other_user.name}
+                      size="lg"
+                      shape="rounded"
+                      alt={`Zdjęcie profilowe ${conv.other_user.name}`}
+                    />
                     {conv.other_user.is_active && (
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--color-accent-mint)] rounded-full border-2 border-white" />
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--color-accent-mint)] rounded-full border-2 border-white" aria-label="Online" />
                     )}
                   </div>
 
@@ -173,6 +166,7 @@ export function ChatPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={handleBackToList}
+            aria-label="Wróć do listy konwersacji"
             className="w-10 h-10 rounded-full bg-[var(--color-bg)] flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
@@ -180,21 +174,13 @@ export function ChatPage() {
 
           {/* User info */}
           <div className="flex items-center gap-3 flex-1">
-            <div className="w-10 h-10 rounded-xl overflow-hidden">
-              {selectedConv?.other_user.profile_photo_url ? (
-                <img
-                  src={selectedConv.other_user.profile_photo_url}
-                  alt={selectedConv.other_user.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                  <span className="text-sm font-light text-white/90">
-                    {getInitials(selectedConv?.other_user.name || '')}
-                  </span>
-                </div>
-              )}
-            </div>
+            <Avatar
+              src={selectedConv?.other_user.profile_photo_url}
+              name={selectedConv?.other_user.name || ''}
+              size="sm"
+              shape="rounded"
+              alt={`Zdjęcie profilowe ${selectedConv?.other_user.name}`}
+            />
             <div>
               <span className="text-headline-sm block">{selectedConv?.other_user.name}</span>
               <span className="text-caption">
@@ -241,21 +227,13 @@ export function ChatPage() {
                   )}
                 >
                   {!isMyMessage && showAvatar && (
-                    <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-                      {selectedConv?.other_user.profile_photo_url ? (
-                        <img
-                          src={selectedConv.other_user.profile_photo_url}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                          <span className="text-xs font-light text-white/90">
-                            {getInitials(selectedConv?.other_user.name || '')}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                    <Avatar
+                      src={selectedConv?.other_user.profile_photo_url}
+                      name={selectedConv?.other_user.name || ''}
+                      size="xs"
+                      shape="rounded"
+                      alt=""
+                    />
                   )}
                   {!isMyMessage && !showAvatar && <div className="w-8" />}
 
@@ -292,6 +270,7 @@ export function ChatPage() {
           <button
             onClick={handleSend}
             disabled={!messageText.trim() || sendMutation.isPending}
+            aria-label="Wyślij wiadomość"
             className={cn(
               'w-12 h-12 rounded-2xl flex items-center justify-center transition-all',
               messageText.trim()

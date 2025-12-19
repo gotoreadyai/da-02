@@ -17,7 +17,8 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/auth'
 import { useMyProfile, useMyDanceStyles } from '@/features/profile/api'
-import { getInitials } from '@/lib/utils'
+import { Avatar } from '@/components/ui/Avatar'
+import { StatCard } from '@/components/ui/StatCard'
 import { cn } from '@/lib/utils'
 
 export function ProfilePage() {
@@ -72,7 +73,10 @@ export function ProfilePage() {
       <header className="px-6 pt-14 pb-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-headline-lg">Profile</h1>
-          <button className="w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm flex items-center justify-center">
+          <button
+            aria-label="Ustawienia"
+            className="w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm flex items-center justify-center"
+          >
             <Settings className="w-5 h-5 text-[var(--color-text-secondary)]" />
           </button>
         </div>
@@ -82,23 +86,17 @@ export function ProfilePage() {
           <div className="flex items-center gap-4 mb-6">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-[var(--color-brand-light)] shadow-lg">
-                {profile.profile_photo_url ? (
-                  <img
-                    src={profile.profile_photo_url}
-                    alt={profile.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                    <span className="text-2xl font-light text-white/90">
-                      {getInitials(profile.name)}
-                    </span>
-                  </div>
-                )}
+              <div className="ring-4 ring-[var(--color-brand-light)] shadow-lg rounded-full">
+                <Avatar
+                  src={profile.profile_photo_url}
+                  name={profile.name}
+                  size="xl"
+                  shape="circle"
+                  alt={`Zdjęcie profilowe ${profile.name}`}
+                />
               </div>
               {profile.is_verified && (
-                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-blue-500 border-3 border-white flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-blue-500 border-3 border-white flex items-center justify-center" aria-label="Zweryfikowany">
                   <Award className="w-4 h-4 text-white" />
                 </div>
               )}
@@ -194,27 +192,6 @@ export function ProfilePage() {
           <span className="text-headline-sm text-red-500">Sign Out</span>
         </button>
       </section>
-    </div>
-  )
-}
-
-// Stat Card Component
-interface StatCardProps {
-  value: number
-  label: string
-  icon: React.ElementType
-}
-
-function StatCard({ value, label, icon: Icon }: StatCardProps) {
-  return (
-    <div className="bg-[var(--color-bg)] rounded-2xl p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-display-md text-[var(--color-text-primary)]">{value}</span>
-        <div className="w-9 h-9 rounded-xl bg-[var(--color-brand-light)] flex items-center justify-center">
-          <Icon className="w-4 h-4 text-[var(--color-brand-dark)]" />
-        </div>
-      </div>
-      <span className="text-caption">{label}</span>
     </div>
   )
 }

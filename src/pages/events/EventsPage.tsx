@@ -1,29 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { FeaturedEventCard, EventRow } from '@/components/events'
 import {
-  MapPin,
   Calendar,
   BookOpen,
   GraduationCap,
   PartyPopper,
   Search,
-  Star,
-  ChevronRight,
 } from 'lucide-react'
 import { useEvents } from '@/features/events/api'
-import { formatTime, getEventTypeLabel } from '@/lib/utils'
 import { cn } from '@/lib/utils'
-import type { EventWithCounts } from '@/types/database'
-
-// 2026 Gradient palette
-const gradients = [
-  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]',
-  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]',
-  'from-[#F97316] via-[#EF4444] to-[#EC4899]',
-  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]',
-  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]',
-]
 
 const eventTypes = [
   { value: 'all', label: 'Wszystkie', icon: Calendar },
@@ -76,6 +63,7 @@ export function EventsPage() {
               <button
                 key={type.value}
                 onClick={() => setEventType(type.value)}
+                aria-pressed={isActive}
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all',
                   isActive
@@ -147,117 +135,5 @@ export function EventsPage() {
         )}
       </section>
     </div>
-  )
-}
-
-// FEATURED EVENT CARD
-function FeaturedEventCard({ event, onPress }: { event: EventWithCounts; onPress: () => void }) {
-  const startDate = new Date(event.start_at)
-  const gradientIndex = event.title.charCodeAt(0) % gradients.length
-  const gradient = gradients[gradientIndex]
-
-  return (
-    <button
-      onClick={onPress}
-      className="flex-shrink-0 w-40 text-left active:scale-[0.97] transition-transform"
-    >
-      <div className={cn(
-        'relative aspect-[4/5] rounded-2xl overflow-hidden shadow-md',
-        `bg-gradient-to-br ${gradient}`
-      )}>
-        {/* Date badge */}
-        <div className="absolute top-2 left-2 bg-white/95 rounded-xl px-2.5 py-1.5 shadow-sm">
-          <span className="text-xl font-bold text-[var(--color-text-primary)] leading-none block">
-            {startDate.getDate()}
-          </span>
-          <span className="text-[8px] font-bold text-[var(--color-brand)] uppercase">
-            {startDate.toLocaleDateString('pl-PL', { month: 'short' })}
-          </span>
-        </div>
-
-        {/* Free badge */}
-        {event.price === 0 && (
-          <div className="absolute top-2 right-2 w-6 h-6 rounded-md bg-[var(--color-accent-mint)] flex items-center justify-center">
-            <Star className="w-3 h-3 text-white" />
-          </div>
-        )}
-
-        {/* Overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-        {/* Content */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5">
-          <span className="text-[9px] font-semibold text-white/60 uppercase tracking-wider">
-            {getEventTypeLabel(event.event_type)}
-          </span>
-          <h3 className="text-white font-semibold text-sm leading-tight mt-0.5 line-clamp-2">
-            {event.title}
-          </h3>
-          {event.city && (
-            <div className="flex items-center gap-1 mt-1">
-              <MapPin className="w-2.5 h-2.5 text-white/50" />
-              <span className="text-[10px] text-white/60">{event.city}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </button>
-  )
-}
-
-// EVENT ROW
-function EventRow({ event, onPress, isLast }: { event: EventWithCounts; onPress: () => void; isLast: boolean }) {
-  const startDate = new Date(event.start_at)
-  const isPast = startDate < new Date()
-  const gradientIndex = event.title.charCodeAt(0) % gradients.length
-  const gradient = gradients[gradientIndex]
-
-  return (
-    <button
-      onClick={onPress}
-      className={cn(
-        'w-full flex items-center gap-3 p-3 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left',
-        !isLast && 'border-b border-black/[0.03]',
-        isPast && 'opacity-50'
-      )}
-    >
-      {/* Date box */}
-      <div className={cn(
-        'w-11 h-11 rounded-xl flex flex-col items-center justify-center flex-shrink-0',
-        `bg-gradient-to-br ${gradient}`
-      )}>
-        <span className="text-lg font-bold text-white leading-none">
-          {startDate.getDate()}
-        </span>
-        <span className="text-[8px] font-bold text-white/70 uppercase">
-          {startDate.toLocaleDateString('pl-PL', { month: 'short' })}
-        </span>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <span className="text-headline-sm truncate">{event.title}</span>
-          {event.price === 0 && (
-            <span className="px-1.5 py-0.5 rounded bg-[var(--color-accent-mint)]/10 text-[var(--color-accent-mint)] text-[8px] font-bold">FREE</span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1.5 text-caption text-xs">
-          <span className="text-[var(--color-brand)] font-medium">
-            {getEventTypeLabel(event.event_type)}
-          </span>
-          <span>· {formatTime(event.start_at)}</span>
-          {event.city && (
-            <span className="flex items-center gap-0.5 truncate">
-              · <MapPin className="w-2.5 h-2.5" />{event.city}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Arrow */}
-      <ChevronRight className="w-4 h-4 text-[var(--color-text-tertiary)] flex-shrink-0" />
-    </button>
   )
 }

@@ -14,16 +14,7 @@ import {
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { useGetOrCreateConversation } from '@/features/chat/api'
 import { cn, getSkillLevelLabel, getInitials } from '@/lib/utils'
-
-// 2026 Gradient palette - ELECTRIC
-const gradients = [
-  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]', // Sunset violet
-  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]', // Ocean to violet
-  'from-[#F97316] via-[#EF4444] to-[#EC4899]', // Fire
-  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]', // Teal dream
-  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]', // Pink to cyan
-  'from-[#FBBF24] via-[#F97316] to-[#EF4444]', // Gold fire
-]
+import { getGradientForName } from '@/lib/constants'
 
 export function DancerDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -65,6 +56,7 @@ export function DancerDetailPage() {
       <div className="min-h-screen px-4 pt-12">
         <button
           onClick={() => navigate(-1)}
+          aria-label="Wróć"
           className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -84,8 +76,7 @@ export function DancerDetailPage() {
     )
   }
 
-  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % gradients.length
-  const gradient = gradients[gradientIndex]
+  const gradient = getGradientForName(dancer.name)
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] pb-36">
@@ -94,13 +85,13 @@ export function DancerDetailPage() {
         {dancer.profile_photo_url ? (
           <img
             src={dancer.profile_photo_url}
-            alt={dancer.name}
+            alt={`Zdjęcie profilowe ${dancer.name}`}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
           <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10rem] font-bold text-white/10 select-none tracking-tighter">
+              <span className="text-[10rem] font-bold text-white/10 select-none tracking-tighter" aria-hidden="true">
                 {getInitials(dancer.name || '?')}
               </span>
             </div>
@@ -114,6 +105,7 @@ export function DancerDetailPage() {
         <div className="absolute top-0 left-0 right-0 pt-12 px-4 flex justify-between items-start">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Wróć"
             className="w-10 h-10 rounded-xl bg-black/20 backdrop-blur-md flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
@@ -212,10 +204,12 @@ export function DancerDetailPage() {
 
       {/* FLOATING ACTIONS - Pill style */}
       <div className="fixed bottom-24 left-4 right-4 z-20">
-        <div className="flex gap-2.5 max-w-md mx-auto">
+        <div className="flex gap-2.5 max-w-md mx-auto" role="group" aria-label="Akcje profilu">
           <button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
+            aria-label={dancer.i_liked ? 'Cofnij polubienie' : 'Polub'}
+            aria-pressed={dancer.i_liked}
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
               dancer.i_liked
@@ -230,6 +224,7 @@ export function DancerDetailPage() {
           <button
             disabled={!dancer.is_matched || getOrCreateConversation.isPending}
             onClick={handleMessage}
+            aria-label={dancer.is_matched ? 'Napisz wiadomość' : 'Najpierw musisz się dopasować'}
             className={cn(
               'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
               dancer.is_matched

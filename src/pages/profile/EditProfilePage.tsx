@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { Avatar } from '@/components/ui/Avatar'
 import { ArrowLeft, Camera, Trash2, Plus, Music, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -10,7 +11,7 @@ import {
   useUploadProfilePhoto,
   useRemoveDanceStyle,
 } from '@/features/profile/api'
-import { getSkillLevelLabel, getInitials } from '@/lib/utils'
+import { getSkillLevelLabel } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function EditProfilePage() {
@@ -99,6 +100,7 @@ export function EditProfilePage() {
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Wróć"
             className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
@@ -109,21 +111,14 @@ export function EditProfilePage() {
         {/* Profile photo */}
         <div className="flex flex-col items-center">
           <div className="relative">
-            <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-[var(--color-brand-light)] shadow-lg">
-              {profile.profile_photo_url ? (
-                <img
-                  src={profile.profile_photo_url}
-                  alt={profile.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                  <span className="text-3xl font-light text-white/90">
-                    {getInitials(profile.name)}
-                  </span>
-                </div>
-              )}
-
+            <div className="ring-4 ring-[var(--color-brand-light)] shadow-lg rounded-full">
+              <Avatar
+                src={profile.profile_photo_url}
+                name={profile.name}
+                size="2xl"
+                shape="circle"
+                alt={`Zdjęcie profilowe ${profile.name}`}
+              />
               {uploadPhotoMutation.isPending && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full">
                   <Spinner size="md" className="border-white border-t-transparent" />
@@ -133,6 +128,7 @@ export function EditProfilePage() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
+              aria-label="Zmień zdjęcie profilowe"
               className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[var(--color-brand)] text-white flex items-center justify-center shadow-lg"
             >
               <Camera className="w-5 h-5" />
@@ -342,6 +338,7 @@ export function EditProfilePage() {
                 </div>
                 <button
                   onClick={() => handleRemoveDanceStyle(style.id)}
+                  aria-label={`Usuń styl ${style.dance_style?.name}`}
                   className="w-10 h-10 rounded-full text-[var(--color-accent-coral)] flex items-center justify-center"
                 >
                   <Trash2 className="w-5 h-5" />
