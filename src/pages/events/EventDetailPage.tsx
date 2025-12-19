@@ -107,100 +107,75 @@ export function EventDetailPage() {
           </div>
         </div>
 
-        {/* Floating date card */}
-        <div className={cn('absolute top-20 left-1/2 -translate-x-1/2 bg-[var(--color-bg-card)] px-5 py-3 shadow-xl text-center', ROUNDED.card)}>
-          <span className="text-3xl font-bold text-[var(--color-text-primary)] leading-none block">
-            {startDate.getDate()}
-          </span>
-          <span className="text-[10px] font-bold text-[var(--color-brand)] uppercase">
-            {startDate.toLocaleDateString('pl-PL', { month: 'short' })}
-          </span>
-        </div>
-
         {/* Event info */}
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          <div className={cn('flex items-center mb-2', GAP.sm)}>
-            <div className={cn('flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm', ROUNDED.badge)}>
-              {typeIcons[event.event_type]}
-              <span className="text-[10px] font-semibold text-white">
-                {getEventTypeLabel(event.event_type)}
-              </span>
-            </div>
+          <div className={cn('flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm w-fit mb-2', ROUNDED.badge)}>
+            {typeIcons[event.event_type]}
+            <span className="text-[10px] font-semibold text-white">
+              {getEventTypeLabel(event.event_type)}
+            </span>
           </div>
 
           <h1 className="text-2xl font-bold text-white leading-tight tracking-tight">
             {event.title}
           </h1>
-
-          <div className={cn('flex items-center mt-2 text-white/60 text-sm', GAP.md)}>
-            <span className={cn('flex items-center', GAP.xs)}>
-              <Clock className={ICON.xs} />
-              {formatTime(event.start_at)}
-            </span>
-            {event.city && (
-              <span className={cn('flex items-center', GAP.xs)}>
-                <MapPin className={ICON.xs} />
-                {event.city}
-              </span>
-            )}
-          </div>
         </div>
       </div>
 
       {/* Content */}
       <div className={cn(LAYOUT.section, 'pt-5 bg-gradient-to-b from-black/60 via-transparent via-40% to-transparent')}>
-        {/* Quick info row */}
-        <div className={cn('card-premium flex items-center', LIST_ITEM.padding, ROUNDED.card)}>
-          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-            <Calendar className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
-          </div>
-          <div className="flex-1">
-            <span className="text-headline-sm block">{formatDate(event.start_at)}</span>
-            <span className="text-caption text-xs">{formatTime(event.start_at)} – {formatTime(event.end_at)}</span>
-          </div>
-          {isFull && (
-            <span className={cn(BADGE.inline, 'bg-red-100 text-red-600')}>PELNE</span>
-          )}
-        </div>
-
         {/* Description */}
         {event.description && (
-          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-wrap py-3">
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-wrap mt-5 mb-5">
             {event.description}
           </p>
         )}
 
-        {/* Location */}
-        <div className={cn('card-premium flex items-center mt-5', LIST_ITEM.padding, ROUNDED.card)}>
-          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-            {event.location_type === 'online' ? (
-              <Globe className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
-            ) : (
-              <MapPin className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
-            )}
+        {/* When & Where */}
+        <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
+          {/* Date & Time */}
+          <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
+            <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              <Calendar className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
+            </div>
+            <div className="flex-1">
+              <span className="text-headline-sm block">{formatDate(event.start_at)}</span>
+              <span className="text-caption text-xs">{formatTime(event.start_at)} – {formatTime(event.end_at)}</span>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            {event.location_type === 'online' ? (
-              <>
-                <span className="text-headline-sm block">{event.online_platform || 'Online'}</span>
-                {event.online_link && (
-                  <a href={event.online_link} target="_blank" rel="noopener noreferrer" className="text-body-sm text-[var(--color-brand)]">
-                    Dolacz
-                  </a>
-                )}
-              </>
-            ) : (
-              <>
-                <span className="text-headline-sm block truncate">{event.location_name}</span>
-                <span className="text-caption text-xs truncate block">
-                  {[event.address, event.city].filter(Boolean).join(', ')}
-                </span>
-              </>
-            )}
+
+          {/* Location */}
+          <div className={cn('flex items-center', LIST_ITEM.padding)}>
+            <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              {event.location_type === 'online' ? (
+                <Globe className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
+              ) : (
+                <MapPin className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              {event.location_type === 'online' ? (
+                <>
+                  <span className="text-headline-sm block">{event.online_platform || 'Online'}</span>
+                  {event.online_link && (
+                    <a href={event.online_link} target="_blank" rel="noopener noreferrer" className="text-caption text-[var(--color-brand)]">
+                      Dołącz do spotkania
+                    </a>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="text-headline-sm block truncate">{event.location_name || event.city}</span>
+                  {event.address && (
+                    <span className="text-caption text-xs truncate block">{event.address}</span>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Details grid */}
+        {/* Details */}
         <div className={cn('card-premium overflow-hidden mt-5', ROUNDED.card)}>
           {event.dance_style && (
             <DetailRow icon={<Music className={ICON.sm} />} label="Styl" value={event.dance_style.name} />
@@ -215,12 +190,13 @@ export function EventDetailPage() {
           <DetailRow
             icon={<Users className={ICON.sm} />}
             label="Miejsca"
-            value={`${event.participant_count}${event.max_participants ? ` / ${event.max_participants}` : ''}`}
+            value={isFull ? 'Brak miejsc' : `${event.participant_count}${event.max_participants ? ` / ${event.max_participants}` : ''}`}
+            accent={isFull}
           />
           <DetailRow
             icon={<Wallet className={ICON.sm} />}
             label="Cena"
-            value={event.price > 0 ? `${event.price} ${event.currency}` : 'Bezplatne'}
+            value={event.price > 0 ? `${event.price} ${event.currency}` : 'Bezpłatne'}
             isLast={!event.requires_partner}
           />
           {event.requires_partner && (
