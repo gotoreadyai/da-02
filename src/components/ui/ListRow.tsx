@@ -44,8 +44,8 @@ export function ListRow({
       onClick={onClick}
       className={cn(
         'w-full flex items-center p-4 gap-4 text-left',
-        onClick && 'hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors cursor-pointer',
-        !isLast && 'border-b border-black/[0.04]',
+        onClick && 'hover:bg-white/[0.02] active:bg-white/[0.04] transition-colors cursor-pointer',
+        !isLast && 'border-b border-white/[0.06]',
         className
       )}
     >

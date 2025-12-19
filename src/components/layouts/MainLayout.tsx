@@ -22,16 +22,23 @@ export function MainLayout() {
   const activeTab = getActiveTab()
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[var(--color-bg)] relative">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/20 via-[#8B5CF6]/12 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#C4B5A0]/8 to-[#D4A574]/15" />
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
+      </div>
+
       {/* Main content */}
-      <main className="pb-24">
+      <main className="relative pb-24">
         <Outlet />
       </main>
 
       {/* Premium Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-50">
         {/* Gradient blur background */}
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-t border-black/[0.04]" />
+        <div className="absolute inset-0 bg-[var(--color-bg-card)]/90 backdrop-blur-xl border-t border-white/[0.06]" />
 
         {/* Navigation items */}
         <div className="relative flex items-center justify-around px-4 py-3">
@@ -45,7 +52,7 @@ export function MainLayout() {
                 onClick={() => navigate(tab.path)}
                 className={cn(
                   'flex flex-col items-center gap-1 py-1 px-3 rounded-2xl transition-all duration-300',
-                  isActive && 'bg-[var(--color-brand-light)]'
+                  isActive && 'bg-[var(--color-brand)]/20'
                 )}
               >
                 <Icon
@@ -53,7 +60,7 @@ export function MainLayout() {
                     ICON.lg,
                     'transition-colors duration-300',
                     isActive
-                      ? 'text-[var(--color-brand-dark)]'
+                      ? 'text-[var(--color-brand)]'
                       : 'text-[var(--color-text-tertiary)]'
                   )}
                   strokeWidth={isActive ? 2.5 : 2}
@@ -62,7 +69,7 @@ export function MainLayout() {
                   className={cn(
                     'text-[10px] font-medium tracking-wide transition-colors duration-300',
                     isActive
-                      ? 'text-[var(--color-brand-dark)]'
+                      ? 'text-[var(--color-brand)]'
                       : 'text-[var(--color-text-tertiary)]'
                   )}
                 >
@@ -74,7 +81,7 @@ export function MainLayout() {
         </div>
 
         {/* Safe area spacer for iOS */}
-        <div className="h-[env(safe-area-inset-bottom)] bg-white/80" />
+        <div className="h-[env(safe-area-inset-bottom)] bg-[var(--color-bg-card)]/90" />
       </nav>
     </div>
   )

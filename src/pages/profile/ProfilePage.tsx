@@ -31,11 +31,11 @@ export function ProfilePage() {
         <div className={cn('card-premium p-4', ROUNDED.card)}>
           <div className="flex items-center gap-4 mb-4">
             <div className="relative">
-              <div className={cn('ring-4 ring-[var(--color-brand-light)] shadow-lg', ROUNDED.circle)}>
+              <div className={cn('ring-4 ring-[var(--color-brand)]/30 shadow-lg', ROUNDED.circle)}>
                 <Avatar src={profile.profile_photo_url} name={profile.name} size="xl" shape="circle" alt={`Zdjecie ${profile.name}`} />
               </div>
               {profile.is_verified && (
-                <div className={cn('absolute -bottom-1 -right-1 w-7 h-7 bg-blue-500 border-3 border-white flex items-center justify-center', ROUNDED.circle)} aria-label="Zweryfikowany">
+                <div className={cn('absolute -bottom-1 -right-1 w-7 h-7 bg-blue-500 border-3 border-[var(--color-bg-card)] flex items-center justify-center', ROUNDED.circle)} aria-label="Zweryfikowany">
                   <Award className="w-4 h-4 text-white" />
                 </div>
               )}

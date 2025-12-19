@@ -1,11 +1,11 @@
-// 2026 Gradient palette - ELECTRIC
+// 2026 Gradient palette - Elegant warm tones
 export const AVATAR_GRADIENTS = [
-  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]', // Sunset violet
-  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]', // Ocean to violet
-  'from-[#F97316] via-[#EF4444] to-[#EC4899]', // Fire
-  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]', // Teal dream
-  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]', // Pink to cyan
-  'from-[#FBBF24] via-[#F97316] to-[#EF4444]', // Gold fire
+  'from-[#D4A574] via-[#C4956A] to-[#A67C52]', // Warm beige/gold
+  'from-[#8B5CF6] via-[#7C3AED] to-[#5B21B6]', // Deep purple
+  'from-[#F472B6] via-[#EC4899] to-[#BE185D]', // Rose pink
+  'from-[#C4B5A0] via-[#A89F91] to-[#8B8178]', // Taupe elegant
+  'from-[#A78BFA] via-[#8B5CF6] to-[#6D28D9]', // Violet
+  'from-[#F59E0B] via-[#D97706] to-[#B45309]', // Amber gold
 ] as const
 
 export function getGradientForName(name: string | null | undefined): string {
@@ -62,9 +62,9 @@ export const LIST_ITEM = {
   // Compact padding for denser lists
   paddingCompact: 'p-3 gap-3',
   // Border between items
-  border: 'border-b border-black/[0.04]',
+  border: 'border-b border-white/[0.06]',
   // Hover/active states
-  interactive: 'hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors',
+  interactive: 'hover:bg-white/[0.02] active:bg-white/[0.04] transition-colors',
 } as const
 
 // Icon containers - STANDARDIZED sizes
@@ -110,7 +110,7 @@ export const SPACING = {
 
 // Form inputs - STANDARDIZED
 export const INPUT = {
-  base: 'w-full bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all rounded-2xl',
+  base: 'w-full bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand)]/30 transition-all rounded-2xl',
   withIcon: 'pl-12 pr-4 py-4',
   standard: 'px-4 py-4',
 } as const
@@ -119,7 +119,7 @@ export const INPUT = {
 export const BUTTON = {
   primary: 'w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center',
   secondary: 'w-full py-4 rounded-2xl bg-[var(--color-bg)] text-[var(--color-text-primary)] text-headline-sm transition-all',
-  danger: 'w-full p-4 rounded-2xl bg-red-50 hover:bg-red-100 active:bg-red-200 transition-colors flex items-center justify-center gap-3',
+  danger: 'w-full p-4 rounded-2xl bg-red-500/10 hover:bg-red-500/15 active:bg-red-500/20 transition-colors flex items-center justify-center gap-3',
 } as const
 
 // Avatar sizes in context - STANDARDIZED
@@ -167,6 +167,6 @@ export const LOGO = {
 export const STATE_ICON = {
   container: 'w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center',
   success: 'bg-[var(--color-accent-mint)]/20',
-  error: 'bg-red-100',
-  info: 'bg-[var(--color-brand-light)]',
+  error: 'bg-red-500/20',
+  info: 'bg-[var(--color-brand)]/20',
 } as const

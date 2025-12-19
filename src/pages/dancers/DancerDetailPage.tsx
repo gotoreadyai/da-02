@@ -47,7 +47,7 @@ export function DancerDetailPage() {
         <button
           onClick={() => navigate(-1)}
           aria-label="Wroc"
-          className={cn(ICON_CONTAINER.md, 'bg-white shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
+          className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
         >
           <ArrowLeft className={ICON.md} />
         </button>
@@ -66,7 +66,7 @@ export function DancerDetailPage() {
   const gradient = getGradientForName(dancer.name)
 
   return (
-    <div className="bg-[var(--color-bg)] pb-36">
+    <div className="pb-36">
       {/* Hero */}
       <div className="relative h-[75vh] min-h-[480px] max-h-[640px]">
         {dancer.profile_photo_url ? (
@@ -166,7 +166,7 @@ export function DancerDetailPage() {
                   idx !== dancer.dance_styles!.length - 1 && LIST_ITEM.border
                 )}
               >
-                <div className={cn(ICON_CONTAINER.sm, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
+                <div className={cn(ICON_CONTAINER.sm, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
                   <Music className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -174,7 +174,7 @@ export function DancerDetailPage() {
                   <span className="text-caption text-xs">{getSkillLevelLabel(style.skill_level)}</span>
                 </div>
                 {style.is_teaching && (
-                  <div className={cn(BADGE.inline, 'bg-[var(--color-brand-lighter)] text-[var(--color-brand)]')}>
+                  <div className={cn(BADGE.inline, 'bg-[var(--color-brand)]/20 text-[var(--color-brand)]')}>
                     UCZY
                   </div>
                 )}
@@ -196,7 +196,7 @@ export function DancerDetailPage() {
               'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
               GAP.sm,
               ROUNDED.button,
-              dancer.i_liked ? 'bg-[var(--color-accent-hot)] text-white' : 'bg-white text-[var(--color-text-primary)]'
+              dancer.i_liked ? 'bg-[var(--color-accent-hot)] text-white' : 'bg-[var(--color-bg-card)] text-[var(--color-text-primary)]'
             )}
           >
             <Heart className={cn(ICON.md, dancer.i_liked && 'fill-current')} />
@@ -211,7 +211,7 @@ export function DancerDetailPage() {
               'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
               GAP.sm,
               ROUNDED.button,
-              dancer.is_matched ? 'bg-[var(--color-brand)] text-white' : 'bg-white/60 text-[var(--color-text-tertiary)]'
+              dancer.is_matched ? 'bg-[var(--color-brand)] text-white' : 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]'
             )}
           >
             <MessageCircle className={ICON.md} />

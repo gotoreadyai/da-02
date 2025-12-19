@@ -25,7 +25,7 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
         `bg-gradient-to-br ${gradient}`
       )}>
         {/* Date badge */}
-        <div className={cn('absolute top-2 left-2 bg-white/95 px-3 py-2 shadow-sm', ROUNDED.pill)}>
+        <div className={cn('absolute top-2 left-2 bg-[var(--color-bg-card)]/95 px-3 py-2 shadow-sm', ROUNDED.pill)}>
           <span className="text-xl font-bold text-[var(--color-text-primary)] leading-none block">
             {startDate.getDate()}
           </span>

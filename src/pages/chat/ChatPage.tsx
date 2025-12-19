@@ -127,8 +127,8 @@ export function ChatPage() {
 
   // Chat view - fixed height without bottom nav padding
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
-      <header className="sticky top-0 z-10 px-5 pt-13 pb-3 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[var(--color-bg)]">
+      <header className="sticky top-0 z-10 px-5 pt-13 pb-3 bg-[var(--color-bg-card)]/90 backdrop-blur-xl border-b border-white/[0.06]">
         <div className={cn('flex items-center', GAP.lg)}>
           <button onClick={handleBackToList} aria-label="Wroc" className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg)] flex items-center justify-center', ROUNDED.circle)}>
             <ArrowLeft className={cn(ICON.md, 'text-[var(--color-text-primary)]')} />
@@ -163,7 +163,7 @@ export function ChatPage() {
                 <div key={message.id} className={cn('flex', GAP.sm, isMyMessage ? 'justify-end' : 'justify-start')}>
                   {!isMyMessage && showAvatar && <Avatar src={selectedConv?.other_user.profile_photo_url} name={selectedConv?.other_user.name || ''} size="xs" shape="rounded" alt="" />}
                   {!isMyMessage && !showAvatar && <div className="w-8" />}
-                  <div className={cn('max-w-[75%] px-4 py-3 text-body-sm', isMyMessage ? cn('bg-[var(--color-brand)] text-white', ROUNDED.card, 'rounded-br-lg') : cn('bg-[var(--color-bg-card)] border border-black/[0.04]', ROUNDED.card, 'rounded-bl-lg'))}>
+                  <div className={cn('max-w-[75%] px-4 py-3 text-body-sm', isMyMessage ? cn('bg-[var(--color-brand)] text-white', ROUNDED.card, 'rounded-br-lg') : cn('bg-[var(--color-bg-card)] border border-white/[0.06]', ROUNDED.card, 'rounded-bl-lg'))}>
                     {message.content}
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export function ChatPage() {
         )}
       </div>
 
-      <div className="p-4 bg-white/90 backdrop-blur-xl border-t border-black/[0.04]">
+      <div className="p-4 bg-[var(--color-bg-card)]/90 backdrop-blur-xl border-t border-white/[0.06]">
         <div className={cn('flex items-center', GAP.md)}>
           <input type="text" value={messageText} onChange={(e) => setMessageText(e.target.value)} onKeyPress={handleKeyPress} placeholder="Napisz wiadomosc..." className={cn('flex-1 px-4 py-3 bg-[var(--color-bg)] text-body-md outline-none', ROUNDED.input)} />
           <button onClick={handleSend} disabled={!messageText.trim() || sendMutation.isPending} aria-label="Wyslij" className={cn('w-12 h-12 flex items-center justify-center transition-all', ROUNDED.card, messageText.trim() ? 'bg-[var(--color-brand)] text-white' : 'bg-[var(--color-bg)] text-[var(--color-text-tertiary)]')}>

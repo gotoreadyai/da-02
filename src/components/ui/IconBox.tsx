@@ -20,8 +20,8 @@ const sizeClasses: Record<IconBoxSize, string> = {
 }
 
 const variantClasses: Record<IconBoxVariant, string> = {
-  brand: 'bg-[var(--color-brand-light)] text-[var(--color-brand-dark)]',
-  brandLight: 'bg-[var(--color-brand-lighter)] text-[var(--color-brand)]',
+  brand: 'bg-[var(--color-brand)]/20 text-[var(--color-brand)]',
+  brandLight: 'bg-[var(--color-brand)]/10 text-[var(--color-brand)]',
   muted: 'bg-[var(--color-bg)] text-[var(--color-text-secondary)]',
   accent: 'bg-[var(--color-accent-hot)]/10 text-[var(--color-accent-hot)]',
 }

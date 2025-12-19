@@ -89,7 +89,7 @@ export function EditProfilePage() {
           <button
             onClick={() => navigate(-1)}
             aria-label="Wroc"
-            className={cn(ICON_CONTAINER.md, 'bg-white shadow-md flex items-center justify-center', ROUNDED.circle)}
+            className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-md flex items-center justify-center', ROUNDED.circle)}
           >
             <ArrowLeft className={ICON.md} />
           </button>
@@ -99,7 +99,7 @@ export function EditProfilePage() {
         {/* Profile photo */}
         <div className="flex flex-col items-center">
           <div className="relative">
-            <div className={cn('ring-4 ring-[var(--color-brand-light)] shadow-lg', ROUNDED.circle)}>
+            <div className={cn('ring-4 ring-[var(--color-brand)]/30 shadow-lg', ROUNDED.circle)}>
               <Avatar src={profile.profile_photo_url} name={profile.name} size="2xl" shape="circle" alt={`Zdjecie profilowe ${profile.name}`} />
               {uploadPhotoMutation.isPending && (
                 <div className={cn('absolute inset-0 bg-black/50 flex items-center justify-center', ROUNDED.circle)}>
@@ -125,8 +125,8 @@ export function EditProfilePage() {
         <h2 className={cn('text-headline-md', LAYOUT.sectionHeadingMargin)}>Podstawowe informacje</h2>
         <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
           <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center')}>
-              <User className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              <User className={cn(ICON.md, 'text-[var(--color-brand)]')} />
             </div>
             <div className="flex-1">
               <label className="text-caption block mb-1">Imie</label>
@@ -135,8 +135,8 @@ export function EditProfilePage() {
           </div>
 
           <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center')}>
-              <User className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              <User className={cn(ICON.md, 'text-[var(--color-brand)]')} />
             </div>
             <div className="flex-1">
               <label className="text-caption block mb-1">Wiek</label>
@@ -145,8 +145,8 @@ export function EditProfilePage() {
           </div>
 
           <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center')}>
-              <Ruler className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              <Ruler className={cn(ICON.md, 'text-[var(--color-brand)]')} />
             </div>
             <div className="flex-1">
               <label className="text-caption block mb-1">Wzrost (cm)</label>
@@ -155,8 +155,8 @@ export function EditProfilePage() {
           </div>
 
           <div className={cn('flex items-center', LIST_ITEM.padding)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center')}>
-              <MapPin className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+              <MapPin className={cn(ICON.md, 'text-[var(--color-brand)]')} />
             </div>
             <div className="flex-1">
               <label className="text-caption block mb-1">Miasto</label>
@@ -171,8 +171,8 @@ export function EditProfilePage() {
         <h2 className={cn('text-headline-md', LAYOUT.sectionHeadingMargin)}>O mnie</h2>
         <div className={cn('card-premium p-4', ROUNDED.card)}>
           <div className={cn('flex items-start', GAP.lg)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center flex-shrink-0')}>
-              <FileText className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center flex-shrink-0')}>
+              <FileText className={cn(ICON.md, 'text-[var(--color-brand)]')} />
             </div>
             <textarea value={formData.bio} onChange={(e) => handleChange('bio', e.target.value)} placeholder="Napisz cos o sobie..." rows={4} className="flex-1 text-body-md bg-transparent outline-none resize-none" />
           </div>
@@ -232,8 +232,8 @@ export function EditProfilePage() {
           <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
             {myDanceStyles.map((style, index) => (
               <div key={style.id} className={cn('flex items-center', LIST_ITEM.padding, index !== myDanceStyles.length - 1 && LIST_ITEM.border)}>
-                <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand-light)] flex items-center justify-center')}>
-                  <Music className={cn(ICON.md, 'text-[var(--color-brand-dark)]')} />
+                <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
+                  <Music className={cn(ICON.md, 'text-[var(--color-brand)]')} />
                 </div>
                 <div className="flex-1">
                   <span className="text-headline-sm block">{style.dance_style?.name}</span>
@@ -255,20 +255,19 @@ export function EditProfilePage() {
           </div>
         )}
 
-        <button className={cn('w-full mt-4 flex items-center justify-center py-4 bg-[var(--color-bg)] text-[var(--color-text-primary)] border border-black/[0.04] text-headline-sm', GAP.sm, ROUNDED.card)}>
+        <button className={cn('w-full mt-4 flex items-center justify-center py-4 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] border border-white/[0.06] text-headline-sm', GAP.sm, ROUNDED.card)}>
           <Plus className={ICON.md} />
           Dodaj styl tanca
         </button>
       </section>
 
-      {/* Fixed bottom save button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-black/[0.04]">
+      {/* Fixed bottom save button - above bottom nav */}
+      <div className="fixed bottom-20 left-0 right-0 px-5 z-20">
         <div className="max-w-lg mx-auto">
           <button onClick={handleSave} disabled={updateMutation.isPending} className={BUTTON.primary}>
             {updateMutation.isPending ? 'Zapisywanie...' : 'Zapisz zmiany'}
           </button>
         </div>
-        <div className="h-[env(safe-area-inset-bottom)]" />
       </div>
     </div>
   )

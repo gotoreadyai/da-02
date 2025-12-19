@@ -44,7 +44,7 @@ export function EventDetailPage() {
         <button
           onClick={() => navigate(-1)}
           aria-label="Wroc"
-          className={cn(ICON_CONTAINER.md, 'bg-white shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
+          className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
         >
           <ArrowLeft className={ICON.md} />
         </button>
@@ -66,7 +66,7 @@ export function EventDetailPage() {
   const gradient = getGradientForName(event.title)
 
   return (
-    <div className="bg-[var(--color-bg)] pb-36">
+    <div className="pb-36">
       {/* Hero */}
       <div className="relative h-[50vh] min-h-[320px] max-h-[400px]">
         <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
@@ -107,7 +107,7 @@ export function EventDetailPage() {
         </div>
 
         {/* Floating date card */}
-        <div className={cn('absolute top-20 left-1/2 -translate-x-1/2 bg-white px-5 py-3 shadow-xl text-center', ROUNDED.card)}>
+        <div className={cn('absolute top-20 left-1/2 -translate-x-1/2 bg-[var(--color-bg-card)] px-5 py-3 shadow-xl text-center', ROUNDED.card)}>
           <span className="text-3xl font-bold text-[var(--color-text-primary)] leading-none block">
             {startDate.getDate()}
           </span>
@@ -150,7 +150,7 @@ export function EventDetailPage() {
       <div className={LAYOUT.section}>
         {/* Quick info row */}
         <div className={cn('card-premium flex items-center', LIST_ITEM.padding, ROUNDED.card)}>
-          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
+          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
             <Calendar className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
           </div>
           <div className="flex-1">
@@ -171,7 +171,7 @@ export function EventDetailPage() {
 
         {/* Location */}
         <div className={cn('card-premium flex items-center mt-5', LIST_ITEM.padding, ROUNDED.card)}>
-          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
+          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
             {event.location_type === 'online' ? (
               <Globe className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
             ) : (
@@ -245,7 +245,7 @@ export function EventDetailPage() {
               'w-full flex items-center justify-center py-4 font-semibold shadow-lg transition-all max-w-md mx-auto',
               GAP.sm,
               ROUNDED.button,
-              isFull ? 'bg-white/60 text-[var(--color-text-tertiary)]' : 'bg-[var(--color-brand)] text-white'
+              isFull ? 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]' : 'bg-[var(--color-brand)] text-white'
             )}
           >
             {registerMutation.isPending ? (

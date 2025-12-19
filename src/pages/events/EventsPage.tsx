@@ -58,7 +58,7 @@ export function EventsPage() {
                   ROUNDED.pill,
                   isActive
                     ? 'bg-[var(--color-brand)] text-white'
-                    : 'bg-white text-[var(--color-text-secondary)] border border-black/[0.04]'
+                    : 'bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border border-white/[0.06]'
                 )}
               >
                 <Icon className={ICON.xs} />
