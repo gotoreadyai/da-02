@@ -1,14 +1,19 @@
 import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { IconBox } from './IconBox'
+import { ICON } from '@/lib/constants'
 
 interface ListRowProps {
   icon: React.ReactNode
-  iconVariant?: 'brand' | 'muted' | 'accent'
+  iconVariant?: 'brand' | 'brandLight' | 'muted' | 'accent'
   /** If true, icon is rendered as-is without wrapping in IconBox */
   rawIcon?: boolean
   title: string
+  /** Custom title element - if provided, replaces default title rendering */
+  titleElement?: React.ReactNode
   subtitle?: string
+  /** Custom subtitle element - if provided, replaces default subtitle rendering */
+  subtitleElement?: React.ReactNode
   rightElement?: React.ReactNode
   showChevron?: boolean
   isLast?: boolean
@@ -22,7 +27,9 @@ export function ListRow({
   iconVariant = 'brand',
   rawIcon = false,
   title,
+  titleElement,
   subtitle,
+  subtitleElement,
   rightElement,
   showChevron = false,
   isLast = false,
@@ -49,16 +56,16 @@ export function ListRow({
       )}
 
       <div className="flex-1 min-w-0">
-        <span className="text-headline-sm block truncate">{title}</span>
-        {subtitle && (
+        {titleElement || <span className="text-headline-sm block truncate">{title}</span>}
+        {subtitleElement || (subtitle && (
           <span className="text-caption text-xs truncate block">{subtitle}</span>
-        )}
+        ))}
       </div>
 
       {rightElement}
 
       {showChevron && (
-        <ChevronRight className="w-5 h-5 text-[var(--color-text-tertiary)] flex-shrink-0" />
+        <ChevronRight className={cn(ICON.md, 'text-[var(--color-text-tertiary)] flex-shrink-0')} />
       )}
     </Component>
   )

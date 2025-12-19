@@ -128,6 +128,16 @@ export const AVATAR_SIZE = {
   listRow: 'md',
 } as const
 
+// Featured cards - STANDARDIZED
+export const FEATURED_CARD = {
+  // Dancer cards (larger)
+  dancer: 'w-52',
+  // Event cards
+  event: 'w-40',
+  // Common styles
+  base: 'flex-shrink-0 text-left active:scale-[0.97] transition-transform',
+} as const
+
 // Icon sizes - STANDARDIZED
 export const ICON = {
   xxs: 'w-2.5 h-2.5',

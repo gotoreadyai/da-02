@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
-import { LIST_ITEM, ICON_CONTAINER } from '@/lib/constants'
+import { IconBox } from '@/components/ui/IconBox'
+import { LIST_ITEM } from '@/lib/constants'
 
 interface DetailRowProps {
   icon: React.ReactNode
@@ -16,13 +17,9 @@ export function DetailRow({ icon, label, value, accent, isLast }: DetailRowProps
       LIST_ITEM.padding,
       !isLast && LIST_ITEM.border
     )}>
-      <div className={cn(
-        ICON_CONTAINER.md,
-        'flex items-center justify-center',
-        accent ? 'bg-[var(--color-accent-hot)]/10 text-[var(--color-accent-hot)]' : 'bg-[var(--color-brand-lighter)] text-[var(--color-brand)]'
-      )}>
+      <IconBox size="md" variant={accent ? 'accent' : 'brandLight'}>
         {icon}
-      </div>
+      </IconBox>
       <div className="flex-1">
         <span className="text-caption text-[10px] uppercase tracking-wider">{label}</span>
         <span className="text-headline-sm block">{value}</span>

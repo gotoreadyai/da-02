@@ -1,6 +1,6 @@
 import { MapPin, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { getGradientForName, ROUNDED, BADGE, ICON } from '@/lib/constants'
+import { getGradientForName, ROUNDED, BADGE, ICON, FEATURED_CARD } from '@/lib/constants'
 import { getEventTypeLabel } from '@/lib/utils'
 import type { EventWithCounts } from '@/types/database'
 
@@ -17,7 +17,7 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
     <button
       onClick={onPress}
       aria-label={`Zobacz wydarzenie: ${event.title}`}
-      className="flex-shrink-0 w-40 text-left active:scale-[0.97] transition-transform"
+      className={cn(FEATURED_CARD.base, FEATURED_CARD.event)}
     >
       <div className={cn(
         'relative aspect-[4/5] overflow-hidden shadow-md',
@@ -54,7 +54,7 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
           </h3>
           {event.city && (
             <div className="flex items-center gap-1 mt-1">
-              <MapPin className="w-2.5 h-2.5 text-white/50" />
+              <MapPin className={cn(ICON.xxs, 'text-white/50')} />
               <span className="text-[10px] text-white/60">{event.city}</span>
             </div>
           )}

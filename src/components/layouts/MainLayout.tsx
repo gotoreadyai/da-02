@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Home, Calendar, MessageCircle, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ICON } from '@/lib/constants'
 
 const tabs = [
   { path: '/dancers', icon: Home, label: 'Home' },
@@ -49,7 +50,8 @@ export function MainLayout() {
               >
                 <Icon
                   className={cn(
-                    'w-6 h-6 transition-colors duration-300',
+                    ICON.lg,
+                    'transition-colors duration-300',
                     isActive
                       ? 'text-[var(--color-brand-dark)]'
                       : 'text-[var(--color-text-tertiary)]'
