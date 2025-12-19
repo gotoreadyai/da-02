@@ -7,11 +7,16 @@ import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/a
 import { cn } from '@/lib/utils'
 import { ROUNDED, ICON_CONTAINER, ICON, LAYOUT } from '@/lib/constants'
 import type { PublicDancer } from '@/types/database'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { EffectCards } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/effect-cards'
 
 export function DancersPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [page] = useState(1)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const { data, isLoading, isError } = useDancers({
     page,
@@ -35,9 +40,45 @@ export function DancersPage() {
 
   return (
     <div>
-      <PageHeader title="Tancerze" subtitle="Odkryj w Twojej okolicy">
+      <PageHeader title="Tancerze" subtitle="Odkryj w Twojej okolicy" />
+
+      {/* Featured - Tinder Style Slider */}
+      {dancers.length > 0 && (
+        <section className="mb-6">
+          <div className="flex justify-center py-4">
+            <Swiper
+              effect="cards"
+              grabCursor
+              modules={[EffectCards]}
+              className="w-[calc(100vw-40px)] max-w-[340px] h-[480px]"
+              onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+              cardsEffect={{
+                perSlideOffset: 6,
+                perSlideRotate: 1,
+                rotate: true,
+                slideShadows: false,
+              }}
+            >
+              {dancers.slice(0, 8).map((dancer, idx) => (
+                <SwiperSlide key={dancer.id} className="rounded-3xl">
+                  <FeaturedDancerCard
+                    dancer={dancer}
+                    onPress={() => navigate(`/dancers/${dancer.id}`)}
+                    isActive={idx === activeIndex}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </section>
+      )}
+
+      {/* List */}
+      <section className={LAYOUT.sectionLast}>
+        <h2 className={cn('text-headline-sm', LAYOUT.sectionHeadingMargin)}>W pobliżu</h2>
+
         {/* Search */}
-        <div className="relative">
+        <div className="relative mb-4">
           <Search className={cn('absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]', ICON.sm)} />
           <input
             type="text"
@@ -53,31 +94,6 @@ export function DancersPage() {
             <SlidersHorizontal className={cn(ICON.xs, 'text-white')} />
           </button>
         </div>
-      </PageHeader>
-
-      {/* Featured - Horizontal scroll */}
-      {dancers.length > 0 && (
-        <section className={LAYOUT.section}>
-          <div className={cn('flex items-center justify-between', LAYOUT.sectionHeadingMargin)}>
-            <h2 className="text-headline-sm">Wyroznienie</h2>
-            <span className="text-caption text-xs">{data?.count || 0}</span>
-          </div>
-
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
-            {dancers.slice(0, 5).map((dancer) => (
-              <FeaturedDancerCard
-                key={dancer.id}
-                dancer={dancer}
-                onPress={() => navigate(`/dancers/${dancer.id}`)}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* List */}
-      <section className={LAYOUT.sectionLast}>
-        <h2 className={cn('text-headline-sm', LAYOUT.sectionHeadingMargin)}>W poblizu</h2>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
