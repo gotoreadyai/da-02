@@ -3,31 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
 import {
   MapPin,
-  Clock,
-  Users,
   Calendar,
   BookOpen,
   GraduationCap,
   PartyPopper,
-  Trophy,
-  Mic,
   Search,
-  Bookmark,
   Star,
   ChevronRight,
 } from 'lucide-react'
 import { useEvents } from '@/features/events/api'
-import { formatDate, formatTime, getEventTypeLabel } from '@/lib/utils'
+import { formatTime, getEventTypeLabel } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 import type { EventWithCounts } from '@/types/database'
-
-const eventTypeIcons: Record<string, React.ReactNode> = {
-  lesson: <BookOpen className="w-4 h-4" />,
-  workshop: <GraduationCap className="w-4 h-4" />,
-  social: <PartyPopper className="w-4 h-4" />,
-  competition: <Trophy className="w-4 h-4" />,
-  performance: <Mic className="w-4 h-4" />,
-}
 
 const eventTypes = [
   { value: 'all', label: 'Wszystkie', icon: Calendar },
@@ -99,15 +86,15 @@ export function EventsPage() {
 
       {/* Featured Section */}
       {events.length > 0 && (
-        <section className="px-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-3 px-6">
             <h2 className="text-headline-md">Polecane</h2>
-            <button className="text-body-sm text-[var(--color-brand)]">Zobacz wszystkie</button>
+            <button className="text-xs font-medium text-[var(--color-brand)]">Więcej</button>
           </div>
 
-          {/* Horizontal scroll cards */}
-          <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
-            {events.slice(0, 3).map((event) => (
+          {/* Horizontal scroll cards - tight gap */}
+          <div className="flex gap-3 overflow-x-auto pb-2 px-6 scrollbar-hide">
+            {events.slice(0, 4).map((event) => (
               <FeaturedEventCard
                 key={event.id}
                 event={event}
@@ -160,64 +147,64 @@ export function EventsPage() {
   )
 }
 
-// Featured Event Card - like mockup
+// Gradient paleta dla wydarzeń
+const eventGradients = [
+  'from-[#667EEA] via-[#764BA2] to-[#F093FB]', // Purple dream
+  'from-[#FF6B6B] via-[#FF8E53] to-[#FEC89A]', // Sunset warm
+  'from-[#4FACFE] via-[#00F2FE] to-[#43E97B]', // Ocean fresh
+  'from-[#FA709A] via-[#FEE140] to-[#FFCF48]', // Pink gold
+  'from-[#A18CD1] via-[#FBC2EB] to-[#FAD0C4]', // Lavender blush
+]
+
+// Featured Event Card - Swiss design inspired
 function FeaturedEventCard({ event, onPress }: { event: EventWithCounts; onPress: () => void }) {
+  const startDate = new Date(event.start_at)
+  const gradientIndex = event.title.charCodeAt(0) % eventGradients.length
+  const gradient = eventGradients[gradientIndex]
+
   return (
     <button
       onClick={onPress}
-      className="flex-shrink-0 w-64 card-premium text-left interactive"
+      className="flex-shrink-0 w-52 text-left active:scale-[0.98] transition-transform"
     >
-      {/* Image */}
-      <div className="relative h-40 rounded-t-[2rem] overflow-hidden">
-        {event.cover_image_url ? (
-          <img
-            src={event.cover_image_url}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-            <span className="text-5xl">💃</span>
-          </div>
-        )}
-
-        {/* Badge */}
-        {event.price === 0 ? (
-          <span className="badge badge-success absolute top-3 left-3 shadow-md">
-            <Star className="w-3 h-3" />
-            BEZPŁATNE
+      <div className={cn(
+        'relative aspect-[4/5] rounded-3xl overflow-hidden shadow-lg',
+        `bg-gradient-to-br ${gradient}`
+      )}>
+        {/* Date badge - top left */}
+        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-2xl px-3 py-2 shadow-sm">
+          <span className="text-2xl font-bold text-[var(--color-text-primary)] leading-none block">
+            {startDate.getDate()}
           </span>
-        ) : (
-          <span className="badge badge-warning absolute top-3 left-3 shadow-md">
-            <Trophy className="w-3 h-3" />
-            POLECANE
+          <span className="text-[10px] font-semibold text-[var(--color-brand)] uppercase">
+            {startDate.toLocaleDateString('pl-PL', { month: 'short' })}
           </span>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="text-headline-sm mb-1 line-clamp-1">{event.title}</h3>
-
-        {/* Category & style */}
-        <div className="flex items-center gap-1 mb-3">
-          <span className="text-body-sm text-[var(--color-brand)]">
-            {getEventTypeLabel(event.event_type)}
-          </span>
-          {event.dance_style?.name && (
-            <span className="text-caption"> • {event.dance_style.name}</span>
-          )}
         </div>
 
-        {/* Bottom row */}
-        <div className="flex items-center justify-between">
-          <span className="text-caption flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5" />
-            {formatDate(event.start_at)}
-          </span>
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-tertiary)] hover:text-[var(--color-brand)]">
-            <Bookmark className="w-5 h-5" />
+        {/* Price badge - top right */}
+        {event.price === 0 ? (
+          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[var(--color-accent-mint)] flex items-center justify-center shadow-lg">
+            <Star className="w-4 h-4 text-white" />
           </div>
+        ) : null}
+
+        {/* Gradient overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+        {/* Content na dole */}
+        <div className="absolute inset-x-0 bottom-0 p-4">
+          <span className="text-[10px] font-semibold text-white/70 uppercase tracking-wider">
+            {getEventTypeLabel(event.event_type)}
+          </span>
+          <h3 className="text-white font-semibold text-base leading-tight mt-1 line-clamp-2">
+            {event.title}
+          </h3>
+          {event.city && (
+            <div className="flex items-center gap-1 mt-2">
+              <MapPin className="w-3 h-3 text-white/60" />
+              <span className="text-xs text-white/70">{event.city}</span>
+            </div>
+          )}
         </div>
       </div>
     </button>

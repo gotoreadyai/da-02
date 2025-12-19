@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
-import { MapPin, Heart, Sparkles, Award, GraduationCap, Search, SlidersHorizontal, Calendar, Bookmark, Crown } from 'lucide-react'
+import { MapPin, Heart, Sparkles, Award, GraduationCap, Search, SlidersHorizontal, Crown } from 'lucide-react'
 import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { useMyProfile } from '@/features/profile/api'
 import { cn, getInitials } from '@/lib/utils'
@@ -10,7 +10,7 @@ import type { PublicDancer } from '@/types/database'
 export function DancersPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
-  const [page, setPage] = useState(1)
+  const [page] = useState(1)
 
   const { data: profile } = useMyProfile()
   const { data, isLoading, isError } = useDancers({
@@ -76,20 +76,19 @@ export function DancersPage() {
 
       {/* Featured Section */}
       {dancers.length > 0 && (
-        <section className="px-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-3 px-6">
             <h2 className="text-headline-md">Wyróżnieni</h2>
-            <button className="text-body-sm text-[var(--color-brand)]">Zobacz wszystkich</button>
+            <button className="text-xs font-medium text-[var(--color-brand)]">Więcej</button>
           </div>
 
-          {/* Horizontal scroll cards */}
-          <div className="flex gap-4 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
-            {dancers.slice(0, 4).map((dancer) => (
+          {/* Horizontal scroll cards - tight gap */}
+          <div className="flex gap-3 overflow-x-auto pb-2 px-6 scrollbar-hide">
+            {dancers.slice(0, 5).map((dancer) => (
               <FeaturedCard
                 key={dancer.id}
                 dancer={dancer}
                 onPress={() => navigate(`/dancers/${dancer.id}`)}
-                onLike={(e) => handleLike(e, dancer)}
               />
             ))}
           </div>
@@ -143,87 +142,78 @@ export function DancersPage() {
 interface FeaturedCardProps {
   dancer: PublicDancer
   onPress: () => void
-  onLike: (e: React.MouseEvent) => void
 }
 
-function FeaturedCard({ dancer, onPress, onLike }: FeaturedCardProps) {
+// Gradient paleta - ciepłe, dynamiczne kolory jak w mockupie
+const cardGradients = [
+  'from-[#F4A261] via-[#E9C46A] to-[#F4D35E]', // Warm peach/gold
+  'from-[#E8B4B8] via-[#EEC4C8] to-[#F5D6D8]', // Pudrowy róż
+  'from-[#A78BFA] via-[#C4B5FD] to-[#DDD6FE]', // Soft violet
+  'from-[#F9A8D4] via-[#FBCFE8] to-[#FCE7F3]', // Pink blush
+  'from-[#6EE7B7] via-[#A7F3D0] to-[#D1FAE5]', // Mint fresh
+  'from-[#FCA5A5] via-[#FECACA] to-[#FEE2E2]', // Coral soft
+]
+
+function FeaturedCard({ dancer, onPress }: FeaturedCardProps) {
+  // Deterministyczny gradient bazowany na pierwszej literze imienia
+  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % cardGradients.length
+  const gradient = cardGradients[gradientIndex]
+
   return (
     <button
       onClick={onPress}
-      className="flex-shrink-0 w-56 card-premium text-left interactive"
+      className="flex-shrink-0 w-44 text-left active:scale-[0.98] transition-transform"
     >
-      {/* Image */}
-      <div className="relative h-40 rounded-t-[2rem] overflow-hidden">
+      {/* Card z gradientem lub zdjęciem */}
+      <div className={cn(
+        'relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg',
+        !dancer.profile_photo_url && `bg-gradient-to-br ${gradient}`
+      )}>
         {dancer.profile_photo_url ? (
           <img
             src={dancer.profile_photo_url}
             alt={dancer.name}
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-            <span className="text-5xl font-light text-white/90 tracking-tight">
+          /* Avatar placeholder - duża litera centered */
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[5rem] font-extralight text-white/40 select-none">
               {dancer.name?.charAt(0)?.toUpperCase()}
             </span>
           </div>
         )}
 
-        {/* Badge */}
+        {/* Gradient overlay na dole dla tekstu */}
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+        {/* Badge - mały, w rogu */}
         {dancer.is_matched ? (
-          <span className="badge badge-success absolute top-3 left-3 shadow-md">
-            <Sparkles className="w-3 h-3" />
-            MATCH
-          </span>
+          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-accent-mint)] flex items-center justify-center shadow-lg">
+            <Sparkles className="w-3.5 h-3.5 text-white" />
+          </div>
         ) : dancer.liked_me ? (
-          <span className="badge badge-warning absolute top-3 left-3 shadow-md">
-            <Heart className="w-3 h-3 fill-current" />
-            LUBI CIĘ
-          </span>
+          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-accent-coral)] flex items-center justify-center shadow-lg">
+            <Heart className="w-3.5 h-3.5 text-white fill-current" />
+          </div>
         ) : dancer.is_trainer ? (
-          <span className="badge badge-brand absolute top-3 left-3 shadow-md">
-            <Crown className="w-3 h-3" />
-            TRENER
-          </span>
+          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-brand)] flex items-center justify-center shadow-lg">
+            <Crown className="w-3.5 h-3.5 text-white" />
+          </div>
         ) : null}
-      </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="text-headline-sm mb-1 truncate">{dancer.name}</h3>
-
-        {/* Category & info */}
-        <div className="flex items-center gap-1 mb-3">
-          {dancer.dance_styles?.[0] && (
-            <span className="text-body-sm text-[var(--color-brand)]">
-              {dancer.dance_styles[0].style_name}
+        {/* Content na dole karty - tight spacing */}
+        <div className="absolute inset-x-0 bottom-0 p-4">
+          <h3 className="text-white font-semibold text-lg leading-tight truncate">
+            {dancer.name}
+          </h3>
+          <div className="flex items-center gap-1.5 mt-1">
+            <MapPin className="w-3 h-3 text-white/60" />
+            <span className="text-xs text-white/70">
+              {dancer.city || 'Polska'}
+              {dancer.age && ` · ${dancer.age}`}
             </span>
-          )}
-          {dancer.age && (
-            <span className="text-caption"> • {dancer.age} lat</span>
-          )}
-        </div>
-
-        {/* Bottom row */}
-        <div className="flex items-center justify-between">
-          {dancer.city ? (
-            <span className="text-caption flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {dancer.city}
-            </span>
-          ) : (
-            <span />
-          )}
-          <button
-            onClick={onLike}
-            className={cn(
-              'w-8 h-8 rounded-lg flex items-center justify-center transition-colors',
-              dancer.i_liked
-                ? 'text-[var(--color-accent-coral)]'
-                : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-accent-coral)]'
-            )}
-          >
-            <Bookmark className={cn('w-5 h-5', dancer.i_liked && 'fill-current')} />
-          </button>
+          </div>
         </div>
       </div>
     </button>
