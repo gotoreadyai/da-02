@@ -1,7 +1,7 @@
 import { MapPin, Heart, Sparkles, Award, GraduationCap } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { cn } from '@/lib/utils'
-import { LIST_ITEM, BADGE, ICON_CONTAINER } from '@/lib/constants'
+import { LIST_ITEM, BADGE, ICON_CONTAINER, AVATAR_SIZE } from '@/lib/constants'
 import type { PublicDancer } from '@/types/database'
 
 interface DancerRowProps {
@@ -32,7 +32,7 @@ export function DancerRow({ dancer, onPress, onLike, isLast }: DancerRowProps) {
         <Avatar
           src={dancer.profile_photo_url}
           name={dancer.name}
-          size="md"
+          size={AVATAR_SIZE.listRow}
           shape="rounded"
           alt={`Zdjecie profilowe ${dancer.name}`}
         />

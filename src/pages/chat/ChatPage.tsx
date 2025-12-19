@@ -5,7 +5,7 @@ import { ArrowLeft, Send, MessageCircle } from 'lucide-react'
 import { useConversations, useMessages, useSendMessage, useMarkAsRead } from '@/features/chat/api'
 import { useAuthStore } from '@/lib/auth'
 import { formatRelativeTime, cn } from '@/lib/utils'
-import { ROUNDED, BADGE, ICON, ICON_CONTAINER, LAYOUT, STATE_ICON, GAP } from '@/lib/constants'
+import { ROUNDED, BADGE, ICON, ICON_CONTAINER, LAYOUT, STATE_ICON, GAP, AVATAR_SIZE } from '@/lib/constants'
 
 export function ChatPage() {
   const { conversationId: urlConversationId } = useParams<{ conversationId: string }>()
@@ -96,7 +96,7 @@ export function ChatPage() {
                   rawIcon
                   icon={
                     <div className="relative flex-shrink-0">
-                      <Avatar src={conv.other_user.profile_photo_url} name={conv.other_user.name} size="lg" shape="rounded" alt={`Zdjecie ${conv.other_user.name}`} />
+                      <Avatar src={conv.other_user.profile_photo_url} name={conv.other_user.name} size={AVATAR_SIZE.listRow} shape="rounded" alt={`Zdjecie ${conv.other_user.name}`} />
                       {conv.other_user.is_active && (
                         <div className={cn('absolute -bottom-1 -right-1 bg-[var(--color-accent-mint)] border-2 border-white', BADGE.indicator)} />
                       )}

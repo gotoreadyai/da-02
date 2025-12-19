@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spinner, Avatar, PageHeader } from '@/components/ui'
+import { Spinner, PageHeader } from '@/components/ui'
 import { FeaturedDancerCard, DancerRow } from '@/components/dancers'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
-import { useMyProfile } from '@/features/profile/api'
 import { cn } from '@/lib/utils'
 import { ROUNDED, ICON_CONTAINER, ICON, LAYOUT } from '@/lib/constants'
 import type { PublicDancer } from '@/types/database'
@@ -14,7 +13,6 @@ export function DancersPage() {
   const [search, setSearch] = useState('')
   const [page] = useState(1)
 
-  const { data: profile } = useMyProfile()
   const { data, isLoading, isError } = useDancers({
     page,
     pageSize: 12,
@@ -37,19 +35,7 @@ export function DancersPage() {
 
   return (
     <div className="min-h-screen pb-8">
-      <PageHeader
-        title={profile?.name || 'Tancerzu'}
-        subtitle="Witaj"
-        rightElement={
-          <button
-            onClick={() => navigate('/profile')}
-            aria-label="Przejdz do profilu"
-            className={cn('ring-2 ring-[var(--color-brand-light)]', ROUNDED.avatarRounded)}
-          >
-            <Avatar src={profile?.profile_photo_url} name={profile?.name || 'U'} size="sm" shape="rounded" />
-          </button>
-        }
-      >
+      <PageHeader title="Tancerze" subtitle="Odkryj w Twojej okolicy">
         {/* Search */}
         <div className="relative">
           <Search className={cn('absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]', ICON.sm)} />

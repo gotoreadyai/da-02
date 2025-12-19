@@ -122,6 +122,12 @@ export const BUTTON = {
   danger: 'w-full p-4 rounded-2xl bg-red-50 hover:bg-red-100 active:bg-red-200 transition-colors flex items-center justify-center gap-3',
 } as const
 
+// Avatar sizes in context - STANDARDIZED
+export const AVATAR_SIZE = {
+  // List rows (dancers, chat, etc.)
+  listRow: 'md',
+} as const
+
 // Icon sizes - STANDARDIZED
 export const ICON = {
   xxs: 'w-2.5 h-2.5',

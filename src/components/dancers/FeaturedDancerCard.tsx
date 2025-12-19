@@ -15,10 +15,10 @@ export function FeaturedDancerCard({ dancer, onPress }: FeaturedDancerCardProps)
     <button
       onClick={onPress}
       aria-label={`Zobacz profil ${dancer.name}`}
-      className="flex-shrink-0 w-36 text-left active:scale-[0.97] transition-transform"
+      className="flex-shrink-0 w-52 text-left active:scale-[0.97] transition-transform"
     >
       <div className={cn(
-        'relative aspect-[3/4] overflow-hidden shadow-md',
+        'relative aspect-[4/5] overflow-hidden shadow-md',
         ROUNDED.card,
         !dancer.profile_photo_url && `bg-gradient-to-br ${gradient}`
       )}>
