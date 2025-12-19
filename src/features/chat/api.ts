@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { Message } from '@/types/database'
 
 // Query keys
 export const chatKeys = {
@@ -14,6 +13,7 @@ export interface ConversationWithParticipant {
   id: string
   last_message_at?: string
   last_message_preview?: string
+  last_message?: string
   other_user: {
     id: string
     name: string
@@ -21,25 +21,62 @@ export interface ConversationWithParticipant {
     is_active?: boolean
     last_seen_at?: string
   }
+  other_participant?: {
+    id: string
+    name: string
+    photo_url?: string
+    is_online?: boolean
+    last_seen?: string
+  }
   unread_count: number
+  current_user_id?: string
 }
 
-// Fetch conversations
+export interface ChatMessage {
+  id: string
+  conversation_id: string
+  sender_id: string
+  content: string
+  created_at: string
+  is_read?: boolean
+}
+
+// Fetch conversations with participants using RPC function
 async function fetchConversations(): Promise<ConversationWithParticipant[]> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
   const { data, error } = await supabase.rpc('get_my_conversations')
-  
+
   if (error) throw error
-  return data || []
+
+  if (!data || data.length === 0) {
+    return []
+  }
+
+  // Map RPC response to our interface
+  return data.map((conv: any) => ({
+    id: conv.conversation_id,
+    last_message_at: conv.last_message_time,
+    last_message_preview: conv.last_message,
+    last_message: conv.last_message,
+    other_user: {
+      id: conv.other_user_id || '',
+      name: conv.other_user_name || 'Nieznany',
+      profile_photo_url: conv.other_user_photo,
+      is_active: false,
+      last_seen_at: undefined,
+    },
+    unread_count: conv.my_unread_count || 0,
+    current_user_id: user.id,
+  }))
 }
 
 // Fetch messages for a conversation
-async function fetchMessages(conversationId: string): Promise<Message[]> {
+async function fetchMessages(conversationId: string): Promise<ChatMessage[]> {
   const { data, error } = await supabase
     .from('messages')
-    .select(`
-      *,
-      sender:users!sender_id(id, name, profile_photo_url)
-    `)
+    .select('*')
     .eq('conversation_id', conversationId)
     .order('created_at', { ascending: true })
 
@@ -53,7 +90,7 @@ interface SendMessageData {
   content: string
 }
 
-async function sendMessage({ conversationId, content }: SendMessageData): Promise<Message> {
+async function sendMessage({ conversationId, content }: SendMessageData): Promise<ChatMessage> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
@@ -71,21 +108,51 @@ async function sendMessage({ conversationId, content }: SendMessageData): Promis
   return data
 }
 
-// Mark conversation as read
+// Mark conversation as read using RPC function
 async function markAsRead(conversationId: string): Promise<void> {
+  const { error } = await supabase.rpc('mark_conversation_read', {
+    p_conversation_id: conversationId,
+  })
+
+  if (error) throw error
+}
+
+// Get or create conversation with another user
+async function getOrCreateConversation(otherUserId: string): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  const { error } = await supabase
-    .from('conversation_participants')
-    .update({
-      last_read_at: new Date().toISOString(),
-      unread_count: 0,
-    })
-    .eq('conversation_id', conversationId)
-    .eq('user_id', user.id)
+  // Try to find existing conversation
+  const { data: existingConversations } = await supabase.rpc('get_my_conversations')
 
-  if (error) throw error
+  const existing = existingConversations?.find(
+    (conv: any) => conv.other_user_id === otherUserId
+  )
+
+  if (existing) {
+    return existing.conversation_id
+  }
+
+  // Create new conversation
+  const { data: newConversation, error: convError } = await supabase
+    .from('conversations')
+    .insert({})
+    .select('id')
+    .single()
+
+  if (convError) throw convError
+
+  // Add both participants
+  const { error: partError } = await supabase
+    .from('conversation_participants')
+    .insert([
+      { conversation_id: newConversation.id, user_id: user.id },
+      { conversation_id: newConversation.id, user_id: otherUserId },
+    ])
+
+  if (partError) throw partError
+
+  return newConversation.id
 }
 
 // Hooks
@@ -93,7 +160,7 @@ export function useConversations() {
   return useQuery({
     queryKey: chatKeys.conversations(),
     queryFn: fetchConversations,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000,
   })
 }
 
@@ -115,14 +182,12 @@ export function useMessages(conversationId: string) {
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          // Add new message to cache
           queryClient.setQueryData(
             chatKeys.messages(conversationId),
-            (old: Message[] | undefined) => {
-              if (!old) return [payload.new as Message]
-              // Avoid duplicates
-              if (old.some(m => m.id === (payload.new as Message).id)) return old
-              return [...old, payload.new as Message]
+            (old: ChatMessage[] | undefined) => {
+              if (!old) return [payload.new as ChatMessage]
+              if (old.some(m => m.id === (payload.new as ChatMessage).id)) return old
+              return [...old, payload.new as ChatMessage]
             }
           )
         }
@@ -147,15 +212,12 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: sendMessage,
     onMutate: async ({ conversationId, content }) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: chatKeys.messages(conversationId) })
 
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // Optimistic update
-      const optimisticMessage: Message = {
+      const optimisticMessage: ChatMessage = {
         id: `temp-${Date.now()}`,
         conversation_id: conversationId,
         sender_id: user.id,
@@ -165,13 +227,12 @@ export function useSendMessage() {
 
       queryClient.setQueryData(
         chatKeys.messages(conversationId),
-        (old: Message[] | undefined) => {
+        (old: ChatMessage[] | undefined) => {
           if (!old) return [optimisticMessage]
           return [...old, optimisticMessage]
         }
       )
 
-      // Update conversation preview
       queryClient.setQueryData(
         chatKeys.conversations(),
         (old: ConversationWithParticipant[] | undefined) => {
@@ -181,6 +242,7 @@ export function useSendMessage() {
               ? {
                   ...conv,
                   last_message_preview: content,
+                  last_message: content,
                   last_message_at: new Date().toISOString(),
                 }
               : conv
@@ -190,12 +252,11 @@ export function useSendMessage() {
 
       return { conversationId, optimisticMessage }
     },
-    onError: (err, { conversationId }, context) => {
-      // Rollback on error
+    onError: (_err, { conversationId }, context) => {
       if (context?.optimisticMessage) {
         queryClient.setQueryData(
           chatKeys.messages(conversationId),
-          (old: Message[] | undefined) => {
+          (old: ChatMessage[] | undefined) => {
             if (!old) return []
             return old.filter(m => m.id !== context.optimisticMessage.id)
           }
@@ -204,6 +265,7 @@ export function useSendMessage() {
     },
     onSettled: (_, __, { conversationId }) => {
       queryClient.invalidateQueries({ queryKey: chatKeys.conversations() })
+      queryClient.invalidateQueries({ queryKey: chatKeys.messages(conversationId) })
     },
   })
 }
@@ -214,7 +276,6 @@ export function useMarkAsRead() {
   return useMutation({
     mutationFn: markAsRead,
     onSuccess: (_, conversationId) => {
-      // Update unread count locally
       queryClient.setQueryData(
         chatKeys.conversations(),
         (old: ConversationWithParticipant[] | undefined) => {
@@ -226,6 +287,17 @@ export function useMarkAsRead() {
           )
         }
       )
+    },
+  })
+}
+
+export function useGetOrCreateConversation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: getOrCreateConversation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: chatKeys.conversations() })
     },
   })
 }

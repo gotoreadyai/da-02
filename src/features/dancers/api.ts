@@ -26,7 +26,7 @@ interface DancersResponse {
 
 // Fetch dancers list
 async function fetchDancers(filters: DancersFilters): Promise<DancersResponse> {
-  const { page = 1, pageSize = 12, search, city, danceStyleId } = filters
+  const { page = 1, pageSize = 12, search, city } = filters
 
   let query = supabase
     .from('v_public_dancers')
@@ -77,8 +77,8 @@ async function likeDancer(targetUserId: string): Promise<void> {
   const { error } = await supabase
     .from('likes')
     .insert({
-      liker_id: user.id,
-      liked_id: targetUserId,
+      from_user_id: user.id,
+      to_user_id: targetUserId,
     })
 
   if (error) throw error
@@ -92,8 +92,8 @@ async function unlikeDancer(targetUserId: string): Promise<void> {
   const { error } = await supabase
     .from('likes')
     .delete()
-    .eq('liker_id', user.id)
-    .eq('liked_id', targetUserId)
+    .eq('from_user_id', user.id)
+    .eq('to_user_id', targetUserId)
 
   if (error) throw error
 }
@@ -150,7 +150,7 @@ export function useLikeDancer() {
 
       return { targetUserId }
     },
-    onError: (err, targetUserId, context) => {
+    onError: (_err, targetUserId) => {
       // Rollback on error
       queryClient.invalidateQueries({ queryKey: dancersKeys.lists() })
       queryClient.invalidateQueries({ queryKey: dancersKeys.detail(targetUserId) })
@@ -194,7 +194,7 @@ export function useUnlikeDancer() {
 
       return { targetUserId }
     },
-    onError: (err, targetUserId) => {
+    onError: (_err, targetUserId) => {
       queryClient.invalidateQueries({ queryKey: dancersKeys.lists() })
       queryClient.invalidateQueries({ queryKey: dancersKeys.detail(targetUserId) })
     },

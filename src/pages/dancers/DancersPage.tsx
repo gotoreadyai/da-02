@@ -7,6 +7,16 @@ import { useMyProfile } from '@/features/profile/api'
 import { cn, getInitials } from '@/lib/utils'
 import type { PublicDancer } from '@/types/database'
 
+// 2026 Gradient palette - ELECTRIC
+const gradients = [
+  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]',
+  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]',
+  'from-[#F97316] via-[#EF4444] to-[#EC4899]',
+  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]',
+  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]',
+  'from-[#FBBF24] via-[#F97316] to-[#EF4444]',
+]
+
 export function DancersPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
@@ -34,23 +44,23 @@ export function DancersPage() {
   const dancers = data?.data || []
 
   return (
-    <div className="min-h-screen pb-8">
-      {/* Header */}
-      <header className="px-6 pt-14 pb-6">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen pb-6">
+      {/* HEADER - Tight */}
+      <header className="px-4 pt-12 pb-4">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <span className="text-caption">Witaj ponownie</span>
+            <span className="text-caption text-xs">Witaj</span>
             <h1 className="text-headline-lg">{profile?.name || 'Tancerzu'}</h1>
           </div>
           <button
             onClick={() => navigate('/profile')}
-            className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-[var(--color-brand-light)] shadow-md"
+            className="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-[var(--color-brand-light)]"
           >
             {profile?.profile_photo_url ? (
               <img src={profile.profile_photo_url} alt="" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-                <span className="text-white text-sm font-medium">
+              <div className="w-full h-full gradient-brand flex items-center justify-center">
+                <span className="text-white text-sm font-semibold">
                   {getInitials(profile?.name || 'U')}
                 </span>
               </div>
@@ -58,32 +68,31 @@ export function DancersPage() {
           </button>
         </div>
 
-        {/* Search */}
+        {/* Search - Compact */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-tertiary)]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Szukaj tancerzy..."
-            className="input-premium pl-12 pr-12"
+            placeholder="Szukaj..."
+            className="input-premium pl-10 pr-10 py-2.5 text-sm"
           />
-          <button className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[var(--color-brand)] flex items-center justify-center">
-            <SlidersHorizontal className="w-4 h-4 text-white" />
+          <button className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-[var(--color-brand)] flex items-center justify-center">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-white" />
           </button>
         </div>
       </header>
 
-      {/* Featured Section */}
+      {/* FEATURED - Horizontal scroll */}
       {dancers.length > 0 && (
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-3 px-6">
-            <h2 className="text-headline-md">Wyróżnieni</h2>
-            <button className="text-xs font-medium text-[var(--color-brand)]">Więcej</button>
+        <section className="mb-4">
+          <div className="flex items-center justify-between mb-2 px-4">
+            <h2 className="text-headline-sm">Wyróżnieni</h2>
+            <span className="text-caption text-xs">{data?.count || 0}</span>
           </div>
 
-          {/* Horizontal scroll cards - tight gap */}
-          <div className="flex gap-3 overflow-x-auto pb-2 px-6 scrollbar-hide">
+          <div className="flex gap-2.5 overflow-x-auto pb-1 px-4 scrollbar-hide">
             {dancers.slice(0, 5).map((dancer) => (
               <FeaturedCard
                 key={dancer.id}
@@ -95,40 +104,33 @@ export function DancersPage() {
         </section>
       )}
 
-      {/* All Dancers Section */}
-      <section className="px-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-headline-md">W pobliżu</h2>
-          <span className="text-caption">{data?.count || 0} osób</span>
-        </div>
+      {/* LIST - Compact rows */}
+      <section className="px-4">
+        <h2 className="text-headline-sm mb-2">W pobliżu</h2>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
+          <div className="flex items-center justify-center py-16">
             <Spinner size="lg" />
           </div>
         ) : isError ? (
-          <div className="card-premium p-8 text-center">
-            <p className="text-body-sm text-red-500">Wystąpił błąd</p>
+          <div className="card-premium p-6 text-center">
+            <p className="text-body-sm text-red-500">Błąd</p>
           </div>
         ) : dancers.length === 0 ? (
-          <div className="card-premium p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-[var(--color-bg)] flex items-center justify-center mx-auto mb-4">
-              <Search className="w-7 h-7 text-[var(--color-text-tertiary)]" />
-            </div>
-            <h3 className="text-headline-sm mb-1">Brak tancerzy</h3>
-            <p className="text-caption">
-              {search ? 'Nie znaleziono tancerzy' : 'Brak tancerzy w pobliżu'}
-            </p>
+          <div className="card-premium p-6 text-center">
+            <Search className="w-6 h-6 text-[var(--color-text-tertiary)] mx-auto mb-2" />
+            <h3 className="text-headline-sm mb-0.5">Brak</h3>
+            <p className="text-caption text-xs">{search ? 'Nie znaleziono' : 'Brak w pobliżu'}</p>
           </div>
         ) : (
           <div className="card-premium overflow-hidden">
-            {dancers.slice(4).map((dancer, index) => (
+            {dancers.slice(4).map((dancer, idx) => (
               <DancerRow
                 key={dancer.id}
                 dancer={dancer}
                 onPress={() => navigate(`/dancers/${dancer.id}`)}
                 onLike={(e) => handleLike(e, dancer)}
-                isLast={index === dancers.slice(4).length - 1}
+                isLast={idx === dancers.slice(4).length - 1}
               />
             ))}
           </div>
@@ -138,35 +140,18 @@ export function DancersPage() {
   )
 }
 
-// Featured Card - like mockup cards with badges
-interface FeaturedCardProps {
-  dancer: PublicDancer
-  onPress: () => void
-}
-
-// Gradient paleta - ciepłe, dynamiczne kolory jak w mockupie
-const cardGradients = [
-  'from-[#F4A261] via-[#E9C46A] to-[#F4D35E]', // Warm peach/gold
-  'from-[#E8B4B8] via-[#EEC4C8] to-[#F5D6D8]', // Pudrowy róż
-  'from-[#A78BFA] via-[#C4B5FD] to-[#DDD6FE]', // Soft violet
-  'from-[#F9A8D4] via-[#FBCFE8] to-[#FCE7F3]', // Pink blush
-  'from-[#6EE7B7] via-[#A7F3D0] to-[#D1FAE5]', // Mint fresh
-  'from-[#FCA5A5] via-[#FECACA] to-[#FEE2E2]', // Coral soft
-]
-
-function FeaturedCard({ dancer, onPress }: FeaturedCardProps) {
-  // Deterministyczny gradient bazowany na pierwszej literze imienia
-  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % cardGradients.length
-  const gradient = cardGradients[gradientIndex]
+// FEATURED CARD - Tight, impactful
+function FeaturedCard({ dancer, onPress }: { dancer: PublicDancer; onPress: () => void }) {
+  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % gradients.length
+  const gradient = gradients[gradientIndex]
 
   return (
     <button
       onClick={onPress}
-      className="flex-shrink-0 w-44 text-left active:scale-[0.98] transition-transform"
+      className="flex-shrink-0 w-36 text-left active:scale-[0.97] transition-transform"
     >
-      {/* Card z gradientem lub zdjęciem */}
       <div className={cn(
-        'relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg',
+        'relative aspect-[3/4] rounded-2xl overflow-hidden shadow-md',
         !dancer.profile_photo_url && `bg-gradient-to-br ${gradient}`
       )}>
         {dancer.profile_photo_url ? (
@@ -176,42 +161,41 @@ function FeaturedCard({ dancer, onPress }: FeaturedCardProps) {
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          /* Avatar placeholder - duża litera centered */
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[5rem] font-extralight text-white/40 select-none">
+            <span className="text-6xl font-bold text-white/15 select-none">
               {dancer.name?.charAt(0)?.toUpperCase()}
             </span>
           </div>
         )}
 
-        {/* Gradient overlay na dole dla tekstu */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-        {/* Badge - mały, w rogu */}
+        {/* Badge */}
         {dancer.is_matched ? (
-          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-accent-mint)] flex items-center justify-center shadow-lg">
-            <Sparkles className="w-3.5 h-3.5 text-white" />
+          <div className="absolute top-2 right-2 w-6 h-6 rounded-md bg-[var(--color-accent-mint)] flex items-center justify-center">
+            <Sparkles className="w-3 h-3 text-white" />
           </div>
         ) : dancer.liked_me ? (
-          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-accent-coral)] flex items-center justify-center shadow-lg">
-            <Heart className="w-3.5 h-3.5 text-white fill-current" />
+          <div className="absolute top-2 right-2 w-6 h-6 rounded-md bg-[var(--color-accent-hot)] flex items-center justify-center">
+            <Heart className="w-3 h-3 text-white fill-current" />
           </div>
         ) : dancer.is_trainer ? (
-          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-brand)] flex items-center justify-center shadow-lg">
-            <Crown className="w-3.5 h-3.5 text-white" />
+          <div className="absolute top-2 right-2 w-6 h-6 rounded-md bg-[var(--color-brand)] flex items-center justify-center">
+            <Crown className="w-3 h-3 text-white" />
           </div>
         ) : null}
 
-        {/* Content na dole karty - tight spacing */}
-        <div className="absolute inset-x-0 bottom-0 p-4">
-          <h3 className="text-white font-semibold text-lg leading-tight truncate">
+        {/* Info */}
+        <div className="absolute inset-x-0 bottom-0 p-2.5">
+          <h3 className="text-white font-semibold text-sm leading-tight truncate">
             {dancer.name}
           </h3>
-          <div className="flex items-center gap-1.5 mt-1">
-            <MapPin className="w-3 h-3 text-white/60" />
-            <span className="text-xs text-white/70">
+          <div className="flex items-center gap-1 mt-0.5">
+            <MapPin className="w-2.5 h-2.5 text-white/50" />
+            <span className="text-[10px] text-white/60 truncate">
               {dancer.city || 'Polska'}
-              {dancer.age && ` · ${dancer.age}`}
+              {dancer.age && `, ${dancer.age}`}
             </span>
           </div>
         </div>
@@ -220,97 +204,89 @@ function FeaturedCard({ dancer, onPress }: FeaturedCardProps) {
   )
 }
 
-// Dancer Row - list style like profile menu
-interface DancerRowProps {
+// DANCER ROW - Compact list item
+function DancerRow({
+  dancer,
+  onPress,
+  onLike,
+  isLast,
+}: {
   dancer: PublicDancer
   onPress: () => void
   onLike: (e: React.MouseEvent) => void
   isLast: boolean
-}
+}) {
+  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % gradients.length
+  const gradient = gradients[gradientIndex]
 
-function DancerRow({ dancer, onPress, onLike, isLast }: DancerRowProps) {
   return (
-    <button
+    <div
       onClick={onPress}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onPress()}
       className={cn(
-        'w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left',
-        !isLast && 'border-b border-black/[0.04]'
+        'w-full flex items-center gap-3 p-3 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left cursor-pointer',
+        !isLast && 'border-b border-black/[0.03]'
       )}
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[var(--color-bg)]">
+        <div className="w-11 h-11 rounded-xl overflow-hidden">
           {dancer.profile_photo_url ? (
-            <img
-              src={dancer.profile_photo_url}
-              alt={dancer.name}
-              className="w-full h-full object-cover"
-            />
+            <img src={dancer.profile_photo_url} alt={dancer.name} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
-              <span className="text-xl font-light text-white/90">
+            <div className={cn('w-full h-full flex items-center justify-center', `bg-gradient-to-br ${gradient}`)}>
+              <span className="text-lg font-semibold text-white/80">
                 {dancer.name?.charAt(0)?.toUpperCase()}
               </span>
             </div>
           )}
         </div>
-
-        {/* Status indicator */}
         {dancer.is_matched && (
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[var(--color-accent-mint)] border-2 border-white flex items-center justify-center">
-            <Sparkles className="w-2.5 h-2.5 text-white" />
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-md bg-[var(--color-accent-mint)] border-2 border-white flex items-center justify-center">
+            <Sparkles className="w-2 h-2 text-white" />
           </div>
         )}
         {!dancer.is_matched && dancer.liked_me && (
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[var(--color-accent-coral)] border-2 border-white flex items-center justify-center">
-            <Heart className="w-2.5 h-2.5 text-white fill-current" />
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-md bg-[var(--color-accent-hot)] border-2 border-white flex items-center justify-center">
+            <Heart className="w-2 h-2 text-white fill-current" />
           </div>
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-0.5">
+        <div className="flex items-center gap-1.5 mb-0.5">
           <span className="text-headline-sm truncate">{dancer.name}</span>
-          {dancer.is_verified && (
-            <Award className="w-4 h-4 text-blue-500 flex-shrink-0" />
-          )}
-          {dancer.is_trainer && (
-            <GraduationCap className="w-4 h-4 text-[var(--color-brand)] flex-shrink-0" />
-          )}
+          {dancer.is_verified && <Award className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />}
+          {dancer.is_trainer && <GraduationCap className="w-3.5 h-3.5 text-[var(--color-brand)] flex-shrink-0" />}
         </div>
-
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 text-caption text-xs">
           {dancer.dance_styles?.[0] && (
-            <span className="text-body-sm text-[var(--color-brand)]">
-              {dancer.dance_styles[0].style_name}
-            </span>
+            <span className="text-[var(--color-brand)] font-medium">{dancer.dance_styles[0].style_name}</span>
           )}
-          {dancer.age && <span className="text-caption">• {dancer.age} lat</span>}
+          {dancer.age && <span>· {dancer.age}</span>}
           {dancer.city && (
-            <>
-              <span className="text-caption">•</span>
-              <span className="text-caption flex items-center gap-0.5">
-                <MapPin className="w-3 h-3" />
-                {dancer.city}
-              </span>
-            </>
+            <span className="flex items-center gap-0.5 truncate">
+              · <MapPin className="w-2.5 h-2.5" />{dancer.city}
+            </span>
           )}
         </div>
       </div>
 
-      {/* Like button */}
+      {/* Like */}
       <button
         onClick={onLike}
         className={cn(
-          'w-11 h-11 rounded-2xl flex items-center justify-center transition-colors flex-shrink-0',
+          'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors',
           dancer.i_liked
-            ? 'bg-[var(--color-accent-coral)]/10 text-[var(--color-accent-coral)]'
-            : 'bg-[var(--color-bg)] text-[var(--color-text-tertiary)] hover:text-[var(--color-accent-coral)]'
+            ? 'bg-[var(--color-accent-hot)]/10 text-[var(--color-accent-hot)]'
+            : 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]'
         )}
       >
-        <Heart className={cn('w-5 h-5', dancer.i_liked && 'fill-current')} />
+        <Heart className={cn('w-4 h-4', dancer.i_liked && 'fill-current')} />
       </button>
-    </button>
+    </div>
   )
 }

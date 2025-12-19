@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
 import { ArrowLeft, Send, MessageCircle } from 'lucide-react'
 import { useConversations, useMessages, useSendMessage, useMarkAsRead } from '@/features/chat/api'
@@ -7,15 +8,36 @@ import { formatRelativeTime, getInitials } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function ChatPage() {
+  const { conversationId: urlConversationId } = useParams<{ conversationId: string }>()
+  const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
   const [messageText, setMessageText] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const { data: conversations, isLoading: isLoadingConversations } = useConversations()
+  const { data: conversations, isLoading: isLoadingConversations, isError, error } = useConversations()
   const { data: messages, isLoading: isLoadingMessages } = useMessages(selectedConversation || '')
   const sendMutation = useSendMessage()
   const markAsReadMutation = useMarkAsRead()
+
+  // Sync URL with state on mount/URL change
+  useEffect(() => {
+    if (urlConversationId) {
+      setSelectedConversation(urlConversationId)
+    }
+  }, [urlConversationId])
+
+  // Update URL when selecting conversation from list
+  const handleSelectConversation = (convId: string) => {
+    setSelectedConversation(convId)
+    navigate(`/chat/${convId}`, { replace: true })
+  }
+
+  // Handle back to list
+  const handleBackToList = () => {
+    setSelectedConversation(null)
+    navigate('/chat', { replace: true })
+  }
 
   // Mark as read when opening conversation
   useEffect(() => {
@@ -64,6 +86,14 @@ export function ChatPage() {
             <div className="flex items-center justify-center py-20">
               <Spinner size="lg" />
             </div>
+          ) : isError ? (
+            <div className="card-premium p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="w-7 h-7 text-red-500" />
+              </div>
+              <h3 className="text-headline-sm mb-1">Błąd ładowania</h3>
+              <p className="text-caption text-red-500">{(error as Error)?.message || 'Nieznany błąd'}</p>
+            </div>
           ) : !conversations || conversations.length === 0 ? (
             <div className="card-premium p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-[var(--color-bg)] flex items-center justify-center mx-auto mb-4">
@@ -77,7 +107,7 @@ export function ChatPage() {
               {conversations.filter((conv) => conv.other_user).map((conv, index, arr) => (
                 <button
                   key={conv.id}
-                  onClick={() => setSelectedConversation(conv.id)}
+                  onClick={() => handleSelectConversation(conv.id)}
                   className={cn(
                     'w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left',
                     index !== arr.length - 1 && 'border-b border-black/[0.04]'
@@ -142,7 +172,7 @@ export function ChatPage() {
       <header className="px-6 pt-14 pb-4 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => setSelectedConversation(null)}
+            onClick={handleBackToList}
             className="w-10 h-10 rounded-full bg-[var(--color-bg)] flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />

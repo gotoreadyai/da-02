@@ -4,26 +4,25 @@ import {
   ArrowLeft,
   MapPin,
   Ruler,
-  Calendar,
   Music,
   Award,
-  GraduationCap,
   Heart,
   MessageCircle,
   Sparkles,
   Crown,
 } from 'lucide-react'
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
-import { cn, formatDate, getSkillLevelLabel, getInitials } from '@/lib/utils'
+import { useGetOrCreateConversation } from '@/features/chat/api'
+import { cn, getSkillLevelLabel, getInitials } from '@/lib/utils'
 
-// Gradient paleta dla profili bez zdjęcia
-const profileGradients = [
-  'from-[#667EEA] via-[#764BA2] to-[#F093FB]', // Purple dream
-  'from-[#FF6B6B] via-[#FF8E53] to-[#FEC89A]', // Sunset warm
-  'from-[#4FACFE] via-[#00F2FE] to-[#43E97B]', // Ocean fresh
-  'from-[#FA709A] via-[#FEE140] to-[#FFCF48]', // Pink gold
-  'from-[#A18CD1] via-[#FBC2EB] to-[#FAD0C4]', // Lavender blush
-  'from-[#F4A261] via-[#E9C46A] to-[#F4D35E]', // Warm peach
+// 2026 Gradient palette - ELECTRIC
+const gradients = [
+  'from-[#8B5CF6] via-[#EC4899] to-[#F97316]', // Sunset violet
+  'from-[#06B6D4] via-[#3B82F6] to-[#8B5CF6]', // Ocean to violet
+  'from-[#F97316] via-[#EF4444] to-[#EC4899]', // Fire
+  'from-[#10B981] via-[#06B6D4] to-[#3B82F6]', // Teal dream
+  'from-[#EC4899] via-[#8B5CF6] to-[#06B6D4]', // Pink to cyan
+  'from-[#FBBF24] via-[#F97316] to-[#EF4444]', // Gold fire
 ]
 
 export function DancerDetailPage() {
@@ -33,6 +32,7 @@ export function DancerDetailPage() {
   const { data: dancer, isLoading, isError } = useDancer(id!)
   const likeMutation = useLikeDancer()
   const unlikeMutation = useUnlikeDancer()
+  const getOrCreateConversation = useGetOrCreateConversation()
 
   const handleLike = () => {
     if (!dancer) return
@@ -43,9 +43,18 @@ export function DancerDetailPage() {
     }
   }
 
+  const handleMessage = () => {
+    if (!dancer) return
+    getOrCreateConversation.mutate(dancer.id, {
+      onSuccess: (conversationId) => {
+        navigate(`/chat/${conversationId}`)
+      },
+    })
+  }
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg)]">
+      <div className="flex items-center justify-center min-h-screen">
         <Spinner size="lg" />
       </div>
     )
@@ -53,40 +62,35 @@ export function DancerDetailPage() {
 
   if (isError || !dancer) {
     return (
-      <div className="min-h-screen bg-[var(--color-bg)]">
-        <header className="px-6 pt-14 pb-6">
+      <div className="min-h-screen px-4 pt-12">
+        <button
+          onClick={() => navigate(-1)}
+          className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="card-premium p-6 text-center">
+          <span className="text-4xl mb-3 block">😕</span>
+          <h2 className="text-headline-md mb-1">Nie znaleziono</h2>
+          <p className="text-caption mb-4">Ten profil nie istnieje</p>
           <button
-            onClick={() => navigate(-1)}
-            className="w-11 h-11 rounded-2xl bg-white shadow-md flex items-center justify-center mb-8"
+            onClick={() => navigate('/dancers')}
+            className="px-5 py-2.5 rounded-xl bg-[var(--color-brand)] text-white text-ui"
           >
-            <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
+            Wróć
           </button>
-          <div className="card-premium p-10 text-center">
-            <div className="w-20 h-20 rounded-full bg-[var(--color-bg)] flex items-center justify-center mx-auto mb-5">
-              <span className="text-4xl">😕</span>
-            </div>
-            <h2 className="text-headline-lg mb-2">Nie znaleziono</h2>
-            <p className="text-caption mb-6">Ten profil nie istnieje lub został usunięty</p>
-            <button
-              onClick={() => navigate('/dancers')}
-              className="px-8 py-3.5 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm"
-            >
-              Wróć do listy
-            </button>
-          </div>
-        </header>
+        </div>
       </div>
     )
   }
 
-  // Deterministyczny gradient
-  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % profileGradients.length
-  const gradient = profileGradients[gradientIndex]
+  const gradientIndex = (dancer.name?.charCodeAt(0) || 0) % gradients.length
+  const gradient = gradients[gradientIndex]
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)] pb-28">
-      {/* Hero - full bleed photo/gradient */}
-      <div className="relative aspect-[3/4] max-h-[70vh]">
+    <div className="min-h-screen bg-[var(--color-bg)] pb-36">
+      {/* HERO - Full viewport impact */}
+      <div className="relative h-[75vh] min-h-[480px] max-h-[640px]">
         {dancer.profile_photo_url ? (
           <img
             src={dancer.profile_photo_url}
@@ -94,161 +98,149 @@ export function DancerDetailPage() {
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          <div className={cn(
-            'absolute inset-0 flex items-center justify-center',
-            `bg-gradient-to-br ${gradient}`
-          )}>
-            <span className="text-[12rem] font-extralight text-white/30 select-none">
-              {getInitials(dancer.name || '?')}
-            </span>
+          <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-[10rem] font-bold text-white/10 select-none tracking-tighter">
+                {getInitials(dancer.name || '?')}
+              </span>
+            </div>
           </div>
         )}
 
-        {/* Gradient overlay - więcej na dole */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-80" />
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/10" />
 
-        {/* Navigation */}
-        <div className="absolute top-0 left-0 right-0 pt-14 px-6 flex justify-between items-start">
+        {/* Top bar */}
+        <div className="absolute top-0 left-0 right-0 pt-12 px-4 flex justify-between items-start">
           <button
             onClick={() => navigate(-1)}
-            className="w-11 h-11 rounded-2xl bg-black/30 backdrop-blur-md flex items-center justify-center border border-white/10"
+            className="w-10 h-10 rounded-xl bg-black/20 backdrop-blur-md flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
 
-          {/* Status badges - pionowo */}
-          <div className="flex flex-col gap-2">
+          {/* Badges stack */}
+          <div className="flex flex-col gap-1.5">
             {dancer.is_matched && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--color-accent-mint)] shadow-lg">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
-                <span className="text-[11px] font-bold text-white tracking-wide">MATCH</span>
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-accent-mint)]">
+                <Sparkles className="w-3 h-3 text-white" />
+                <span className="text-[9px] font-bold text-white tracking-wider">MATCH</span>
               </div>
             )}
             {!dancer.is_matched && dancer.liked_me && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--color-accent-coral)] shadow-lg">
-                <Heart className="w-3.5 h-3.5 text-white fill-current" />
-                <span className="text-[11px] font-bold text-white tracking-wide">LUBI CIĘ</span>
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-accent-hot)]">
+                <Heart className="w-3 h-3 text-white fill-current" />
+                <span className="text-[9px] font-bold text-white tracking-wider">LUBI CIĘ</span>
               </div>
             )}
             {dancer.is_trainer && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--color-brand)] shadow-lg">
-                <Crown className="w-3.5 h-3.5 text-white" />
-                <span className="text-[11px] font-bold text-white tracking-wide">TRENER</span>
+              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-brand)]">
+                <Crown className="w-3 h-3 text-white" />
               </div>
             )}
             {dancer.is_verified && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500 shadow-lg">
+              <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center">
                 <Award className="w-3.5 h-3.5 text-white" />
               </div>
             )}
           </div>
         </div>
 
-        {/* Name & basic info - na dole hero */}
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h1 className="text-[2.5rem] font-bold text-white leading-tight tracking-tight">
+        {/* Name overlay - TIGHT typography */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h1 className="text-display-lg text-white tracking-tight">
             {dancer.name}
             {dancer.age && (
-              <span className="font-normal text-white/70 ml-2">{dancer.age}</span>
+              <span className="font-normal text-white/60 ml-1">{dancer.age}</span>
             )}
           </h1>
 
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex items-center gap-3 mt-1">
             {dancer.city && (
-              <span className="flex items-center gap-1.5 text-white/70 text-sm">
-                <MapPin className="w-4 h-4" />
+              <span className="flex items-center gap-1 text-white/60 text-sm">
+                <MapPin className="w-3.5 h-3.5" />
                 {dancer.city}
               </span>
             )}
             {dancer.height && (
-              <span className="flex items-center gap-1.5 text-white/70 text-sm">
-                <Ruler className="w-4 h-4" />
-                {dancer.height} cm
+              <span className="flex items-center gap-1 text-white/60 text-sm">
+                <Ruler className="w-3.5 h-3.5" />
+                {dancer.height}cm
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Content - pull up over hero */}
-      <div className="px-6 -mt-4 relative z-10 space-y-5">
-        {/* Bio card */}
+      {/* CONTENT */}
+      <div className="px-4 pt-5 space-y-4">
+        {/* Bio - Clean text with breathing room */}
         {dancer.bio && (
-          <div className="card-premium p-5">
-            <p className="text-body-md text-[var(--color-text-secondary)] leading-relaxed">
-              {dancer.bio}
-            </p>
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed py-2">
+            {dancer.bio}
+          </p>
+        )}
+
+        {/* Dance styles - Compact list */}
+        {dancer.dance_styles && dancer.dance_styles.length > 0 && (
+          <div className="card-premium overflow-hidden">
+            {dancer.dance_styles.map((style, idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3',
+                  idx !== dancer.dance_styles!.length - 1 && 'border-b border-black/[0.03]'
+                )}
+              >
+                <div className="w-9 h-9 rounded-xl bg-[var(--color-brand-lighter)] flex items-center justify-center">
+                  <Music className="w-4 h-4 text-[var(--color-brand)]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-headline-sm block truncate">{style.style_name}</span>
+                  <span className="text-caption text-xs">{getSkillLevelLabel(style.skill_level)}</span>
+                </div>
+                {style.is_teaching && (
+                  <div className="px-2 py-0.5 rounded-md bg-[var(--color-brand-lighter)]">
+                    <span className="text-[8px] font-bold text-[var(--color-brand)] tracking-wider">UCZY</span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
-
-        {/* Dance styles */}
-        {dancer.dance_styles && dancer.dance_styles.length > 0 && (
-          <section>
-            <h2 className="text-label text-[var(--color-text-tertiary)] mb-3 px-1">STYLE TAŃCA</h2>
-            <div className="card-premium overflow-hidden">
-              {dancer.dance_styles.map((style, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    'flex items-center gap-4 p-4',
-                    index !== dancer.dance_styles!.length - 1 && 'border-b border-black/[0.04]'
-                  )}
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
-                    <Music className="w-5 h-5 text-[var(--color-brand-dark)]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-headline-sm block truncate">{style.style_name}</span>
-                    <span className="text-caption">{getSkillLevelLabel(style.skill_level)}</span>
-                  </div>
-                  {style.is_teaching && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--color-brand-light)]">
-                      <GraduationCap className="w-3.5 h-3.5 text-[var(--color-brand)]" />
-                      <span className="text-[10px] font-semibold text-[var(--color-brand)]">UCZY</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Member since */}
-        <div className="flex items-center gap-3 px-1 text-[var(--color-text-tertiary)]">
-          <Calendar className="w-4 h-4" />
-          <span className="text-caption">Dołączył {formatDate(dancer.created_at)}</span>
-        </div>
       </div>
 
-      {/* Fixed bottom actions - floating style */}
-      <div className="fixed bottom-6 left-6 right-6 z-20">
-        <div className="flex gap-3 max-w-lg mx-auto">
+      {/* FLOATING ACTIONS - Pill style */}
+      <div className="fixed bottom-24 left-4 right-4 z-20">
+        <div className="flex gap-2.5 max-w-md mx-auto">
           <button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl text-headline-sm shadow-xl transition-all',
+              'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
               dancer.i_liked
-                ? 'bg-[var(--color-accent-coral)] text-white'
-                : 'bg-white text-[var(--color-text-primary)] border border-black/[0.06]'
+                ? 'bg-[var(--color-accent-hot)] text-white'
+                : 'bg-white text-[var(--color-text-primary)]'
             )}
           >
             <Heart className={cn('w-5 h-5', dancer.i_liked && 'fill-current')} />
-            {dancer.i_liked ? 'Polubiono' : 'Polub'}
+            <span className="text-sm">{dancer.i_liked ? 'Lubisz' : 'Polub'}</span>
           </button>
 
           <button
-            disabled={!dancer.is_matched}
-            onClick={() => navigate('/chat')}
+            disabled={!dancer.is_matched || getOrCreateConversation.isPending}
+            onClick={handleMessage}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl text-headline-sm shadow-xl transition-all',
+              'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
               dancer.is_matched
                 ? 'bg-[var(--color-brand)] text-white'
-                : 'bg-white/80 text-[var(--color-text-tertiary)] border border-black/[0.06]'
+                : 'bg-white/60 text-[var(--color-text-tertiary)]'
             )}
           >
             <MessageCircle className="w-5 h-5" />
-            {dancer.is_matched ? 'Napisz' : 'Dopasuj się'}
+            <span className="text-sm">
+              {getOrCreateConversation.isPending ? 'Otwieranie...' : dancer.is_matched ? 'Napisz' : 'Dopasuj'}
+            </span>
           </button>
         </div>
       </div>

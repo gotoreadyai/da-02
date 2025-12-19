@@ -32,15 +32,15 @@ export type Database = {
         Insert: Omit<Match, 'id' | 'created_at'>
         Update: Partial<Omit<Match, 'id'>>
       }
-      conversations: {
-        Row: Conversation
-        Insert: Omit<Conversation, 'id' | 'created_at'>
-        Update: Partial<Omit<Conversation, 'id'>>
+      chat_conversations: {
+        Row: ChatConversation
+        Insert: Omit<ChatConversation, 'id' | 'created_at'>
+        Update: Partial<Omit<ChatConversation, 'id'>>
       }
-      messages: {
-        Row: Message
-        Insert: Omit<Message, 'id' | 'created_at'>
-        Update: Partial<Omit<Message, 'id'>>
+      chat_messages: {
+        Row: ChatMessage
+        Insert: Omit<ChatMessage, 'id' | 'created_at'>
+        Update: Partial<Omit<ChatMessage, 'id'>>
       }
     }
     Views: {
@@ -141,19 +141,30 @@ export interface Match {
   created_at: string
 }
 
-export interface Conversation {
+export interface ChatConversation {
   id: string
-  match_id: string
+  current_user_id?: string
+  other_participant?: {
+    id: string
+    name: string
+    photo_url?: string
+    is_online?: boolean
+    last_seen?: string
+  }
+  last_message?: string
   last_message_at?: string
-  last_message_preview?: string
+  last_message_sender_id?: string
+  unread_count: number
   created_at: string
+  updated_at?: string
 }
 
-export interface Message {
+export interface ChatMessage {
   id: string
   conversation_id: string
   sender_id: string
   content: string
+  is_read?: boolean
   created_at: string
 }
 

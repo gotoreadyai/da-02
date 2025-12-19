@@ -123,6 +123,7 @@ export function App() {
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:id" element={<EventDetailPage />} />
               <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat/:conversationId" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/edit" element={<EditProfilePage />} />
             </Route>

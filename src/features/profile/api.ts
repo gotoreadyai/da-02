@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/lib/auth'
-import type { User, UserDanceStyle, DanceStyle } from '@/types/database'
+import type { User, UserDanceStyle } from '@/types/database'
 
 // Query keys
 export const profileKeys = {
