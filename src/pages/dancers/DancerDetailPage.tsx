@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
 import { ArrowLeft, MapPin, Ruler, Music, Award, Heart, MessageCircle, Sparkles, Crown } from 'lucide-react'
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { useGetOrCreateConversation } from '@/features/chat/api'
@@ -185,8 +186,8 @@ export function DancerDetailPage() {
       </div>
 
       {/* Floating actions */}
-      <div className={LAYOUT.floatingAction}>
-        <div className={cn('flex max-w-md mx-auto', GAP.md)} role="group" aria-label="Akcje profilu">
+      <FloatingActionBar>
+        <div className={cn('flex max-w-md w-full', GAP.md)} role="group" aria-label="Akcje profilu">
           <button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
@@ -220,7 +221,7 @@ export function DancerDetailPage() {
             </span>
           </button>
         </div>
-      </div>
+      </FloatingActionBar>
     </div>
   )
 }

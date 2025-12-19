@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
+import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
 import { DetailRow } from '@/components/events'
 import { ArrowLeft, MapPin, Clock, Users, Music, Calendar, Globe, Wallet, GraduationCap, Star, UserPlus, BookOpen, PartyPopper, Trophy, Mic } from 'lucide-react'
 import { toast } from 'sonner'
 import { useEvent, useRegisterForEvent } from '@/features/events/api'
 import { formatDate, formatTime, getEventTypeLabel, getSkillLevelLabel, cn } from '@/lib/utils'
-import { getGradientForName, LAYOUT, ROUNDED, BADGE, ICON_CONTAINER, ICON, GAP, LIST_ITEM } from '@/lib/constants'
+import { getGradientForName, ROUNDED, BADGE, ICON_CONTAINER, ICON, GAP, LIST_ITEM, LAYOUT } from '@/lib/constants'
 
 const typeIcons: Record<string, React.ReactNode> = {
   lesson: <BookOpen className={ICON.md} />,
@@ -236,13 +237,13 @@ export function EventDetailPage() {
 
       {/* Floating action */}
       {!isPast && (
-        <div className={LAYOUT.floatingAction}>
+        <FloatingActionBar>
           <button
             disabled={isFull || registerMutation.isPending}
             onClick={handleRegister}
             aria-label={isFull ? 'Brak wolnych miejsc' : 'Zapisz sie na wydarzenie'}
             className={cn(
-              'w-full flex items-center justify-center py-4 font-semibold shadow-lg transition-all max-w-md mx-auto',
+              'w-full flex items-center justify-center py-4 font-semibold shadow-lg transition-all max-w-md',
               GAP.sm,
               ROUNDED.button,
               isFull ? 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]' : 'bg-[var(--color-brand)] text-white'
@@ -264,7 +265,7 @@ export function EventDetailPage() {
               </>
             )}
           </button>
-        </div>
+        </FloatingActionBar>
       )}
     </div>
   )

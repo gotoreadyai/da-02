@@ -1,4 +1,5 @@
 export { Avatar } from './Avatar'
+export { FloatingActionBar } from './FloatingActionBar'
 export { IconBox } from './IconBox'
 export { InputField } from './InputField'
 export { ListRow } from './ListRow'

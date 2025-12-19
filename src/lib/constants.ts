@@ -29,8 +29,6 @@ export const LAYOUT = {
   sectionHeadingMargin: 'mb-3',
   // Horizontal scroll containers
   horizontalScroll: 'gap-3 px-5',
-  // Floating action buttons
-  floatingAction: 'fixed bottom-21 left-5 right-5 z-20',
 } as const
 
 // Rounded corners - STANDARDIZED

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
 import { Avatar } from '@/components/ui/Avatar'
+import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
 import { ArrowLeft, Camera, Trash2, Plus, Music, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
 import { useMyProfile, useMyDanceStyles, useUpdateProfile, useUploadProfilePhoto, useRemoveDanceStyle } from '@/features/profile/api'
@@ -261,14 +262,12 @@ export function EditProfilePage() {
         </button>
       </section>
 
-      {/* Fixed bottom save button - above bottom nav */}
-      <div className="fixed bottom-20 left-0 right-0 px-5 z-20">
-        <div className="max-w-lg mx-auto">
-          <button onClick={handleSave} disabled={updateMutation.isPending} className={BUTTON.primary}>
-            {updateMutation.isPending ? 'Zapisywanie...' : 'Zapisz zmiany'}
-          </button>
-        </div>
-      </div>
+      {/* Fixed bottom save button */}
+      <FloatingActionBar>
+        <button onClick={handleSave} disabled={updateMutation.isPending} className={cn(BUTTON.primary, 'max-w-md')}>
+          {updateMutation.isPending ? 'Zapisywanie...' : 'Zapisz zmiany'}
+        </button>
+      </FloatingActionBar>
     </div>
   )
 }
