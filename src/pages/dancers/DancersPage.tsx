@@ -39,7 +39,7 @@ export function DancersPage() {
   const dancers = data?.data || []
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
 
       {/* Featured - Tinder Style Slider */}
       {dancers.length > 0 && (
