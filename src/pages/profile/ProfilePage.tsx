@@ -21,7 +21,7 @@ export function ProfilePage() {
 
   const menuItems = [
     { icon: <User className={ICON.md} />, title: 'Dane osobowe', subtitle: 'Edytuj profil', onClick: () => navigate('/profile/edit') },
-    { icon: <Music className={ICON.md} />, title: 'Style taneczne', subtitle: 'Twoje preferencje', onClick: () => navigate('/profile/edit') },
+    { icon: <Music className={ICON.md} />, title: 'Style taneczne', subtitle: `${danceStyles?.length || 0} stylow`, onClick: () => navigate('/profile/dance-styles') },
     { icon: <Calendar className={ICON.md} />, title: 'Moje wydarzenia', subtitle: 'Historia i nadchodzace', onClick: () => navigate('/events') },
   ]
 

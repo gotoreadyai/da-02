@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spinner, PageHeader } from '@/components/ui'
+import { Spinner } from '@/components/ui'
 import { FeaturedDancerCard, DancerRow } from '@/components/dancers'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'

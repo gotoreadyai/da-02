@@ -118,6 +118,8 @@ async function addDanceStyle(data: AddDanceStyleData): Promise<UserDanceStyle> {
   const { data: { user: authUser } } = await supabase.auth.getUser()
   if (!authUser) throw new Error('Not authenticated')
 
+  console.log('Adding dance style:', { ...data, user_id: authUser.id })
+
   const { data: created, error } = await supabase
     .from('user_dance_styles')
     .insert({
@@ -130,18 +132,28 @@ async function addDanceStyle(data: AddDanceStyleData): Promise<UserDanceStyle> {
     `)
     .single()
 
-  if (error) throw error
+  if (error) {
+    console.error('Error adding dance style:', error)
+    throw error
+  }
+  console.log('Dance style added:', created)
   return created
 }
 
 // Remove dance style
 async function removeDanceStyle(id: string): Promise<void> {
+  console.log('Removing dance style:', id)
+
   const { error } = await supabase
     .from('user_dance_styles')
     .delete()
     .eq('id', id)
 
-  if (error) throw error
+  if (error) {
+    console.error('Error removing dance style:', error)
+    throw error
+  }
+  console.log('Dance style removed')
 }
 
 // Hooks

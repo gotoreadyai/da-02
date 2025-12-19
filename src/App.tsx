@@ -23,6 +23,7 @@ import { EventDetailPage } from '@/pages/events/EventDetailPage'
 import { ChatPage } from '@/pages/chat/ChatPage'
 import { ProfilePage } from '@/pages/profile/ProfilePage'
 import { EditProfilePage } from '@/pages/profile/EditProfilePage'
+import { DanceStylesPage } from '@/pages/profile/DanceStylesPage'
 
 // Protected route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -126,6 +127,7 @@ export function App() {
               <Route path="/chat/:conversationId" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/edit" element={<EditProfilePage />} />
+              <Route path="/profile/dance-styles" element={<DanceStylesPage />} />
             </Route>
 
             {/* Default redirect */}
@@ -135,8 +137,20 @@ export function App() {
 
           <Toaster
             position="top-center"
+            expand={false}
             toastOptions={{
-              className: 'bg-[var(--color-bg-card)] text-[var(--color-text-primary)] shadow-lg rounded-2xl',
+              unstyled: true,
+              classNames: {
+                toast: 'w-[90vw] max-w-md px-5 py-4 rounded-2xl shadow-2xl flex items-center justify-center gap-3 text-base font-semibold',
+                success: 'bg-green-600 text-white',
+                error: 'bg-red-600 text-white',
+                info: 'bg-blue-600 text-white',
+                warning: 'bg-amber-500 text-white',
+              },
+            }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
             }}
           />
         </BrowserRouter>

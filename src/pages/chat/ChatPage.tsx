@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner, Avatar, PageHeader, ListRow } from '@/components/ui'
-import { ArrowLeft, Send, MessageCircle } from 'lucide-react'
+import { ArrowLeft, Send, MessageCircle, Heart } from 'lucide-react'
 import { useConversations, useMessages, useSendMessage, useMarkAsRead } from '@/features/chat/api'
 import { useAuthStore } from '@/lib/auth'
 import { formatRelativeTime, cn } from '@/lib/utils'
@@ -65,7 +65,7 @@ export function ChatPage() {
   if (!selectedConversation) {
     return (
       <div>
-        <PageHeader title="Czat" subtitle="Twoje konwersacje" />
+        <PageHeader title="Czat" subtitle="Twoje dopasowania" />
 
         <section className={LAYOUT.sectionLast}>
           {isLoadingConversations ? (
@@ -103,6 +103,15 @@ export function ChatPage() {
                     </div>
                   }
                   title={conv.other_user.name}
+                  titleElement={
+                    <div className="flex items-center gap-2">
+                      <span className="text-headline-sm">{conv.other_user.name}</span>
+                      <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium bg-pink-500/20 text-pink-400', ROUNDED.pill)}>
+                        <Heart className="w-2.5 h-2.5 fill-current" />
+                        Match
+                      </span>
+                    </div>
+                  }
                   subtitle={conv.last_message_preview || 'Brak wiadomosci'}
                   onClick={() => handleSelectConversation(conv.id)}
                   isLast={index === arr.length - 1}

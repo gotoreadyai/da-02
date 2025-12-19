@@ -3,22 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
 import { Avatar } from '@/components/ui/Avatar'
 import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
-import { ArrowLeft, Camera, Trash2, Plus, Music, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
+import { ArrowLeft, Camera, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
-import { useMyProfile, useMyDanceStyles, useUpdateProfile, useUploadProfilePhoto, useRemoveDanceStyle } from '@/features/profile/api'
-import { getSkillLevelLabel, cn } from '@/lib/utils'
-import { LAYOUT, ROUNDED, LIST_ITEM, ICON_CONTAINER, ICON, TOGGLE, STATE_ICON, GAP, BUTTON } from '@/lib/constants'
+import { useMyProfile, useUpdateProfile, useUploadProfilePhoto } from '@/features/profile/api'
+import { cn } from '@/lib/utils'
+import { LAYOUT, ROUNDED, LIST_ITEM, ICON_CONTAINER, ICON, TOGGLE, BUTTON, GAP } from '@/lib/constants'
 
 export function EditProfilePage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: profile } = useMyProfile()
-  const { data: myDanceStyles } = useMyDanceStyles()
 
   const updateMutation = useUpdateProfile()
   const uploadPhotoMutation = useUploadProfilePhoto()
-  const removeDanceStyleMutation = useRemoveDanceStyle()
 
   const [formData, setFormData] = useState({
     name: profile?.name || '',
@@ -71,12 +69,6 @@ export function EditProfilePage() {
     uploadPhotoMutation.mutate(file, {
       onSuccess: () => toast.success('Zdjecie zaktualizowane'),
       onError: () => toast.error('Nie udalo sie przeslac zdjecia'),
-    })
-  }
-
-  const handleRemoveDanceStyle = (id: string) => {
-    removeDanceStyleMutation.mutate(id, {
-      onSuccess: () => toast.success('Styl usuniety'),
     })
   }
 
@@ -223,43 +215,6 @@ export function EditProfilePage() {
             </div>
           </button>
         </div>
-      </section>
-
-      {/* Dance styles */}
-      <section className={LAYOUT.section}>
-        <h2 className={cn('text-headline-md', LAYOUT.sectionHeadingMargin)}>Style tanca</h2>
-
-        {myDanceStyles && myDanceStyles.length > 0 ? (
-          <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
-            {myDanceStyles.map((style, index) => (
-              <div key={style.id} className={cn('flex items-center', LIST_ITEM.padding, index !== myDanceStyles.length - 1 && LIST_ITEM.border)}>
-                <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-                  <Music className={cn(ICON.md, 'text-[var(--color-brand)]')} />
-                </div>
-                <div className="flex-1">
-                  <span className="text-headline-sm block">{style.dance_style?.name}</span>
-                  <span className="text-caption">{getSkillLevelLabel(style.skill_level)}</span>
-                </div>
-                <button onClick={() => handleRemoveDanceStyle(style.id)} aria-label={`Usun styl ${style.dance_style?.name}`} className={cn(ICON_CONTAINER.md, 'text-[var(--color-accent-coral)] flex items-center justify-center', ROUNDED.circle)}>
-                  <Trash2 className={ICON.md} />
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className={cn('card-premium p-8 text-center', ROUNDED.card)}>
-            <div className={cn(STATE_ICON.container, 'bg-[var(--color-bg)]')}>
-              <Music className={cn(ICON.lg, 'text-[var(--color-text-tertiary)]')} />
-            </div>
-            <h3 className="text-headline-sm mb-1">Brak stylow</h3>
-            <p className="text-caption">Nie dodano zadnych stylow tanca</p>
-          </div>
-        )}
-
-        <button className={cn('w-full mt-4 flex items-center justify-center py-4 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] border border-white/[0.06] text-headline-sm', GAP.sm, ROUNDED.card)}>
-          <Plus className={ICON.md} />
-          Dodaj styl tanca
-        </button>
       </section>
 
       {/* Fixed bottom save button */}
