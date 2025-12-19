@@ -147,7 +147,7 @@ export function DancerDetailPage() {
       </div>
 
       {/* Content */}
-      <div className={LAYOUT.section}>
+      <div className={cn(LAYOUT.section, 'mt-5')}>
         {/* Bio */}
         {dancer.bio && (
           <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed py-3">
