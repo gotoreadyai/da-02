@@ -5,7 +5,7 @@ import { FeaturedDancerCard, DancerRow } from '@/components/dancers'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { cn } from '@/lib/utils'
-import { ROUNDED, ICON_CONTAINER, ICON, LAYOUT } from '@/lib/constants'
+import { ROUNDED, ICON_CONTAINER, ICON, LAYOUT, getGradientForStatus } from '@/lib/constants'
 import type { PublicDancer } from '@/types/database'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
@@ -40,17 +40,50 @@ export function DancersPage() {
 
   return (
     <div>
-      <PageHeader title="Tancerze" subtitle="Odkryj w Twojej okolicy" />
 
       {/* Featured - Tinder Style Slider */}
       {dancers.length > 0 && (
-        <section className="mb-6">
-          <div className="flex justify-center py-4">
+        <section className="mb-6 pt-16 relative">
+          {/* Ambient light - góra */}
+          <div
+            className={cn(
+              'absolute inset-x-0 -top-10 h-48 blur-[100px] opacity-10 transition-all duration-1000 pointer-events-none',
+              `bg-gradient-to-b ${dancers[activeIndex] ? getGradientForStatus(dancers[activeIndex]) : ''}`
+            )}
+          />
+
+          {/* Ambient light - środek */}
+          <div
+            className={cn(
+              'absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/4 w-[500px] h-[600px] rounded-full blur-[120px] opacity-15 transition-all duration-700 pointer-events-none',
+              `bg-gradient-to-br ${dancers[activeIndex] ? getGradientForStatus(dancers[activeIndex]) : ''}`
+            )}
+          />
+
+          {/* Ambient light - dół */}
+          <div
+            className={cn(
+              'absolute inset-x-0 -bottom-20 h-48 blur-[100px] opacity-10 transition-all duration-1000 pointer-events-none',
+              `bg-gradient-to-t ${dancers[activeIndex] ? getGradientForStatus(dancers[activeIndex]) : ''}`
+            )}
+          />
+
+          {/* Subtle particles/dots */}
+          <div className="absolute inset-0 opacity-30 pointer-events-none"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.03) 1px, transparent 1px),
+                               radial-gradient(circle at 80% 70%, rgba(255,255,255,0.03) 1px, transparent 1px),
+                               radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+              backgroundSize: '100px 100px, 80px 80px, 120px 120px'
+            }}
+          />
+
+          <div className="relative flex justify-center py-6">
             <Swiper
               effect="cards"
               grabCursor
               modules={[EffectCards]}
-              className="w-[calc(100vw-40px)] max-w-[340px] h-[480px]"
+              className="w-[calc(100vw-40px)] max-w-[340px] h-[540px]"
               onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
               cardsEffect={{
                 perSlideOffset: 6,

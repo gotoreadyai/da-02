@@ -8,10 +8,37 @@ export const AVATAR_GRADIENTS = [
   'from-[#F59E0B] via-[#D97706] to-[#B45309]', // Amber gold
 ] as const
 
+// Status-based gradients - każdy kolor coś oznacza
+export const STATUS_GRADIENTS = {
+  match: 'from-[#10B981] via-[#059669] to-[#047857]',      // Mint/Green - MATCH!
+  likedMe: 'from-[#F43F5E] via-[#E11D48] to-[#BE123C]',   // Hot pink - ktoś Cię lubi
+  trainer: 'from-[#8B5CF6] via-[#7C3AED] to-[#5B21B6]',   // Purple - trener
+  iLiked: 'from-[#F59E0B] via-[#D97706] to-[#B45309]',    // Amber - lubisz
+  verified: 'from-[#3B82F6] via-[#2563EB] to-[#1D4ED8]',  // Blue - zweryfikowany
+  default: 'from-[#6B7280] via-[#4B5563] to-[#374151]',   // Gray - domyślny
+} as const
+
 export function getGradientForName(name: string | null | undefined): string {
   const charCode = name?.charCodeAt(0) || 0
   const gradientIndex = charCode % AVATAR_GRADIENTS.length
   return AVATAR_GRADIENTS[gradientIndex]
+}
+
+interface DancerStatus {
+  is_matched?: boolean
+  liked_me?: boolean
+  is_trainer?: boolean
+  i_liked?: boolean
+  is_verified?: boolean
+}
+
+export function getGradientForStatus(dancer: DancerStatus): string {
+  if (dancer.is_matched) return STATUS_GRADIENTS.match
+  if (dancer.liked_me) return STATUS_GRADIENTS.likedMe
+  if (dancer.is_trainer) return STATUS_GRADIENTS.trainer
+  if (dancer.i_liked) return STATUS_GRADIENTS.iLiked
+  if (dancer.is_verified) return STATUS_GRADIENTS.verified
+  return STATUS_GRADIENTS.default
 }
 
 // ============================================
