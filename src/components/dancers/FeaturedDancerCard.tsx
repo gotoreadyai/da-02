@@ -30,15 +30,16 @@ export function FeaturedDancerCard({ dancer, onPress, isActive = false }: Featur
       {/* Karta */}
       <div className={cn(
         'relative h-full',
-        'rounded-[32px]',
-        `bg-gradient-to-br ${gradient}`,
-        'shadow-[0_8px_40px_rgba(0,0,0,0.3)]',
-        'p-[3px]',
+        'rounded-[28px]',
+        'shadow-[0_8px_40px_rgba(0,0,0,0.4),0_0_0_1px_rgba(0,0,0,0.1),-8px_0_24px_rgba(0,0,0,0.3)]',
         'transition-transform duration-300',
         'group-active:scale-[0.98]'
       )}>
         {/* Inner card with photo */}
-        <div className="relative w-full h-full rounded-[29px] overflow-hidden bg-black">
+        <div className={cn(
+          'relative w-full h-full rounded-[28px] overflow-hidden',
+          'ring-1 ring-white/10'
+        )}>
           {/* Status dot */}
           {(dancer.is_matched || dancer.liked_me || dancer.is_trainer || dancer.i_liked || dancer.is_verified) && (
             <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/40 backdrop-blur-sm">

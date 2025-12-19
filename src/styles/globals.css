@@ -430,6 +430,18 @@ body {
   scrollbar-width: none;
 }
 
+/* Swiper cards shadow between slides */
+.swiper-slide-shadow {
+  background: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 100%) !important;
+  border-radius: 28px;
+}
+.swiper-slide-shadow-left {
+  background: linear-gradient(to left, rgba(0,0,0,0.4) 0%, transparent 100%) !important;
+}
+.swiper-slide-shadow-right {
+  background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 100%) !important;
+}
+
 /* Text selection */
 .selectable {
   user-select: text;

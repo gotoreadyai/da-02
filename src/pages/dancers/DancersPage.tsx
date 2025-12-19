@@ -83,13 +83,13 @@ export function DancersPage() {
               effect="cards"
               grabCursor
               modules={[EffectCards]}
-              className="w-[calc(100vw-40px)] max-w-[340px] h-[540px]"
+              className="w-[calc(100vw-40px)] max-w-[360px] h-[560px]"
               onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
               cardsEffect={{
                 perSlideOffset: 6,
-                perSlideRotate: 1,
+                perSlideRotate: 0.5,
                 rotate: true,
-                slideShadows: false,
+                slideShadows: true,
               }}
             >
               {dancers.slice(0, 8).map((dancer, idx) => (
