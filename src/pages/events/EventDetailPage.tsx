@@ -1,35 +1,18 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
 import { DetailRow } from '@/components/events'
-import {
-  ArrowLeft,
-  MapPin,
-  Clock,
-  Users,
-  Music,
-  Calendar,
-  Globe,
-  Wallet,
-  GraduationCap,
-  Star,
-  UserPlus,
-  BookOpen,
-  PartyPopper,
-  Trophy,
-  Mic,
-} from 'lucide-react'
+import { ArrowLeft, MapPin, Clock, Users, Music, Calendar, Globe, Wallet, GraduationCap, Star, UserPlus, BookOpen, PartyPopper, Trophy, Mic } from 'lucide-react'
 import { toast } from 'sonner'
 import { useEvent, useRegisterForEvent } from '@/features/events/api'
-import { formatDate, formatTime, getEventTypeLabel, getSkillLevelLabel } from '@/lib/utils'
-import { cn } from '@/lib/utils'
-import { getGradientForName } from '@/lib/constants'
+import { formatDate, formatTime, getEventTypeLabel, getSkillLevelLabel, cn } from '@/lib/utils'
+import { getGradientForName, LAYOUT, ROUNDED, BADGE, ICON_CONTAINER, ICON, GAP, LIST_ITEM } from '@/lib/constants'
 
 const typeIcons: Record<string, React.ReactNode> = {
-  lesson: <BookOpen className="w-5 h-5" />,
-  workshop: <GraduationCap className="w-5 h-5" />,
-  social: <PartyPopper className="w-5 h-5" />,
-  competition: <Trophy className="w-5 h-5" />,
-  performance: <Mic className="w-5 h-5" />,
+  lesson: <BookOpen className={ICON.md} />,
+  workshop: <GraduationCap className={ICON.md} />,
+  social: <PartyPopper className={ICON.md} />,
+  competition: <Trophy className={ICON.md} />,
+  performance: <Mic className={ICON.md} />,
 }
 
 export function EventDetailPage() {
@@ -43,7 +26,7 @@ export function EventDetailPage() {
     if (!event) return
     registerMutation.mutate(event.id, {
       onSuccess: () => toast.success('Zapisano!'),
-      onError: () => toast.error('Nie udało się zapisać'),
+      onError: () => toast.error('Nie udalo sie zapisac'),
     })
   }
 
@@ -57,23 +40,20 @@ export function EventDetailPage() {
 
   if (isError || !event) {
     return (
-      <div className="min-h-screen px-4 pt-12">
+      <div className="min-h-screen px-5 pt-13">
         <button
           onClick={() => navigate(-1)}
-          aria-label="Wróć"
-          className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
+          aria-label="Wroc"
+          className={cn(ICON_CONTAINER.md, 'bg-white shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className={ICON.md} />
         </button>
-        <div className="card-premium p-6 text-center">
+        <div className={cn('card-premium p-8 text-center', ROUNDED.card)}>
           <span className="text-4xl mb-3 block">😕</span>
           <h2 className="text-headline-md mb-1">Nie znaleziono</h2>
           <p className="text-caption mb-4">To wydarzenie nie istnieje</p>
-          <button
-            onClick={() => navigate('/events')}
-            className="px-5 py-2.5 rounded-xl bg-[var(--color-brand)] text-white text-ui"
-          >
-            Wróć
+          <button onClick={() => navigate('/events')} className={cn('px-5 py-3 bg-[var(--color-brand)] text-white text-ui', ROUNDED.button)}>
+            Wroc
           </button>
         </div>
       </div>
@@ -87,47 +67,47 @@ export function EventDetailPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] pb-36">
-      {/* HERO - Compact but impactful */}
+      {/* Hero */}
       <div className="relative h-[50vh] min-h-[320px] max-h-[400px]">
         <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
           {/* Large icon watermark */}
           <div className="absolute inset-0 flex items-center justify-center text-white/10">
             <div className="scale-[3]">
-              {typeIcons[event.event_type] || <Calendar className="w-5 h-5" />}
+              {typeIcons[event.event_type] || <Calendar className={ICON.md} />}
             </div>
           </div>
         </div>
 
-        {/* Dark overlay */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
 
         {/* Top bar */}
-        <div className="absolute top-0 left-0 right-0 pt-12 px-4 flex justify-between items-start">
+        <div className="absolute top-0 left-0 right-0 pt-13 px-5 flex justify-between items-start">
           <button
             onClick={() => navigate(-1)}
-            aria-label="Wróć"
-            className="w-10 h-10 rounded-xl bg-black/20 backdrop-blur-md flex items-center justify-center"
+            aria-label="Wroc"
+            className={cn(ICON_CONTAINER.md, 'bg-black/20 backdrop-blur-md flex items-center justify-center', ROUNDED.avatarRounded)}
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className={cn(ICON.md, 'text-white')} />
           </button>
 
-          <div className="flex gap-1.5">
+          <div className={GAP.sm + ' flex'}>
             {event.price === 0 && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-accent-mint)]">
-                <Star className="w-3 h-3 text-white" />
-                <span className="text-[9px] font-bold text-white">FREE</span>
+              <div className={cn(BADGE.standard, 'bg-[var(--color-accent-mint)] flex items-center gap-1')}>
+                <Star className={cn(ICON.xs, 'text-white')} />
+                <span className="text-white">FREE</span>
               </div>
             )}
             {isPast && (
-              <div className="px-2 py-1 rounded-lg bg-black/40 backdrop-blur">
-                <span className="text-[9px] font-bold text-white/80">ZAKOŃCZONE</span>
+              <div className={cn(BADGE.standard, 'bg-black/40 backdrop-blur')}>
+                <span className="text-white/80">ZAKONCZONE</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Floating date card */}
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-white rounded-2xl px-5 py-3 shadow-xl text-center">
+        <div className={cn('absolute top-20 left-1/2 -translate-x-1/2 bg-white px-5 py-3 shadow-xl text-center', ROUNDED.card)}>
           <span className="text-3xl font-bold text-[var(--color-text-primary)] leading-none block">
             {startDate.getDate()}
           </span>
@@ -137,9 +117,9 @@ export function EventDetailPage() {
         </div>
 
         {/* Event info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="flex items-center gap-1.5 mb-2">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/20 backdrop-blur-sm">
+        <div className="absolute bottom-0 left-0 right-0 p-5">
+          <div className={cn('flex items-center mb-2', GAP.sm)}>
+            <div className={cn('flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur-sm', ROUNDED.badge)}>
               {typeIcons[event.event_type]}
               <span className="text-[10px] font-semibold text-white">
                 {getEventTypeLabel(event.event_type)}
@@ -151,14 +131,14 @@ export function EventDetailPage() {
             {event.title}
           </h1>
 
-          <div className="flex items-center gap-3 mt-1.5 text-white/60 text-sm">
-            <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
+          <div className={cn('flex items-center mt-2 text-white/60 text-sm', GAP.md)}>
+            <span className={cn('flex items-center', GAP.xs)}>
+              <Clock className={ICON.xs} />
               {formatTime(event.start_at)}
             </span>
             {event.city && (
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5" />
+              <span className={cn('flex items-center', GAP.xs)}>
+                <MapPin className={ICON.xs} />
                 {event.city}
               </span>
             )}
@@ -166,36 +146,36 @@ export function EventDetailPage() {
         </div>
       </div>
 
-      {/* CONTENT */}
-      <div className="px-4 pt-5 space-y-4">
+      {/* Content */}
+      <div className={LAYOUT.section}>
         {/* Quick info row */}
-        <div className="card-premium p-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[var(--color-brand-lighter)] flex items-center justify-center">
-            <Calendar className="w-4 h-4 text-[var(--color-brand)]" />
+        <div className={cn('card-premium flex items-center', LIST_ITEM.padding, ROUNDED.card)}>
+          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
+            <Calendar className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
           </div>
           <div className="flex-1">
             <span className="text-headline-sm block">{formatDate(event.start_at)}</span>
             <span className="text-caption text-xs">{formatTime(event.start_at)} – {formatTime(event.end_at)}</span>
           </div>
           {isFull && (
-            <span className="px-2 py-0.5 rounded-md bg-red-100 text-red-600 text-[9px] font-bold">PEŁNE</span>
+            <span className={cn(BADGE.inline, 'bg-red-100 text-red-600')}>PELNE</span>
           )}
         </div>
 
-        {/* Description - Clean text with breathing room */}
+        {/* Description */}
         {event.description && (
-          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-wrap py-2">
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-wrap py-3">
             {event.description}
           </p>
         )}
 
         {/* Location */}
-        <div className="card-premium p-3 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[var(--color-brand-lighter)] flex items-center justify-center">
+        <div className={cn('card-premium flex items-center mt-5', LIST_ITEM.padding, ROUNDED.card)}>
+          <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
             {event.location_type === 'online' ? (
-              <Globe className="w-4 h-4 text-[var(--color-brand)]" />
+              <Globe className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
             ) : (
-              <MapPin className="w-4 h-4 text-[var(--color-brand)]" />
+              <MapPin className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -204,7 +184,7 @@ export function EventDetailPage() {
                 <span className="text-headline-sm block">{event.online_platform || 'Online'}</span>
                 {event.online_link && (
                   <a href={event.online_link} target="_blank" rel="noopener noreferrer" className="text-body-sm text-[var(--color-brand)]">
-                    Dołącz
+                    Dolacz
                   </a>
                 )}
               </>
@@ -220,31 +200,31 @@ export function EventDetailPage() {
         </div>
 
         {/* Details grid */}
-        <div className="card-premium overflow-hidden">
+        <div className={cn('card-premium overflow-hidden mt-5', ROUNDED.card)}>
           {event.dance_style && (
-            <DetailRow icon={<Music className="w-4 h-4" />} label="Styl" value={event.dance_style.name} />
+            <DetailRow icon={<Music className={ICON.sm} />} label="Styl" value={event.dance_style.name} />
           )}
           {(event.skill_level_min || event.skill_level_max) && (
             <DetailRow
-              icon={<GraduationCap className="w-4 h-4" />}
+              icon={<GraduationCap className={ICON.sm} />}
               label="Poziom"
               value={`${event.skill_level_min ? getSkillLevelLabel(event.skill_level_min) : ''}${event.skill_level_max && event.skill_level_min !== event.skill_level_max ? ` – ${getSkillLevelLabel(event.skill_level_max)}` : ''}`}
             />
           )}
           <DetailRow
-            icon={<Users className="w-4 h-4" />}
+            icon={<Users className={ICON.sm} />}
             label="Miejsca"
             value={`${event.participant_count}${event.max_participants ? ` / ${event.max_participants}` : ''}`}
           />
           <DetailRow
-            icon={<Wallet className="w-4 h-4" />}
+            icon={<Wallet className={ICON.sm} />}
             label="Cena"
-            value={event.price > 0 ? `${event.price} ${event.currency}` : 'Bezpłatne'}
+            value={event.price > 0 ? `${event.price} ${event.currency}` : 'Bezplatne'}
             isLast={!event.requires_partner}
           />
           {event.requires_partner && (
             <DetailRow
-              icon={<UserPlus className="w-4 h-4" />}
+              icon={<UserPlus className={ICON.sm} />}
               label="Partner"
               value="Wymagany"
               accent
@@ -254,18 +234,18 @@ export function EventDetailPage() {
         </div>
       </div>
 
-      {/* FLOATING ACTION */}
+      {/* Floating action */}
       {!isPast && (
-        <div className="fixed bottom-24 left-4 right-4 z-20">
+        <div className={LAYOUT.floatingAction}>
           <button
             disabled={isFull || registerMutation.isPending}
             onClick={handleRegister}
-            aria-label={isFull ? 'Brak wolnych miejsc' : 'Zapisz się na wydarzenie'}
+            aria-label={isFull ? 'Brak wolnych miejsc' : 'Zapisz sie na wydarzenie'}
             className={cn(
-              'w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all max-w-md mx-auto',
-              isFull
-                ? 'bg-white/60 text-[var(--color-text-tertiary)]'
-                : 'bg-[var(--color-brand)] text-white'
+              'w-full flex items-center justify-center py-4 font-semibold shadow-lg transition-all max-w-md mx-auto',
+              GAP.sm,
+              ROUNDED.button,
+              isFull ? 'bg-white/60 text-[var(--color-text-tertiary)]' : 'bg-[var(--color-brand)] text-white'
             )}
           >
             {registerMutation.isPending ? (
@@ -274,10 +254,10 @@ export function EventDetailPage() {
               'Brak miejsc'
             ) : (
               <>
-                <Calendar className="w-5 h-5" />
-                <span className="text-sm">Zapisz się</span>
+                <Calendar className={ICON.md} />
+                <span className="text-sm">Zapisz sie</span>
                 {event.price > 0 && (
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-xs">
+                  <span className={cn('ml-1 px-2 py-0.5 bg-white/20 text-xs', ROUNDED.circle)}>
                     {event.price} {event.currency}
                   </span>
                 )}

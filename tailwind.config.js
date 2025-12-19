@@ -4,6 +4,12 @@ export default konstaConfig({
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      // Fibonacci spacing: 1, 2, 3, 5, 8, 13, 21, 34
+      spacing: {
+        '13': '3.25rem',  // 52px
+        '21': '5.25rem',  // 84px
+        '34': '8.5rem',   // 136px
+      },
       colors: {
         // Modern purple/magenta palette inspired by mockup
         brand: {

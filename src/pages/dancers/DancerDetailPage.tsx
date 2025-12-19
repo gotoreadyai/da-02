@@ -1,20 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Spinner } from '@/components/ui/Spinner'
-import {
-  ArrowLeft,
-  MapPin,
-  Ruler,
-  Music,
-  Award,
-  Heart,
-  MessageCircle,
-  Sparkles,
-  Crown,
-} from 'lucide-react'
+import { ArrowLeft, MapPin, Ruler, Music, Award, Heart, MessageCircle, Sparkles, Crown } from 'lucide-react'
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { useGetOrCreateConversation } from '@/features/chat/api'
 import { cn, getSkillLevelLabel, getInitials } from '@/lib/utils'
-import { getGradientForName } from '@/lib/constants'
+import { getGradientForName, ROUNDED, ICON, ICON_CONTAINER, LIST_ITEM, BADGE, LAYOUT, GAP } from '@/lib/constants'
 
 export function DancerDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -53,23 +43,20 @@ export function DancerDetailPage() {
 
   if (isError || !dancer) {
     return (
-      <div className="min-h-screen px-4 pt-12">
+      <div className="min-h-screen px-5 pt-13">
         <button
           onClick={() => navigate(-1)}
-          aria-label="Wróć"
-          className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6"
+          aria-label="Wroc"
+          className={cn(ICON_CONTAINER.md, 'bg-white shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className={ICON.md} />
         </button>
-        <div className="card-premium p-6 text-center">
+        <div className={cn('card-premium p-8 text-center', ROUNDED.card)}>
           <span className="text-4xl mb-3 block">😕</span>
           <h2 className="text-headline-md mb-1">Nie znaleziono</h2>
           <p className="text-caption mb-4">Ten profil nie istnieje</p>
-          <button
-            onClick={() => navigate('/dancers')}
-            className="px-5 py-2.5 rounded-xl bg-[var(--color-brand)] text-white text-ui"
-          >
-            Wróć
+          <button onClick={() => navigate('/dancers')} className={cn('px-5 py-3 bg-[var(--color-brand)] text-white text-ui', ROUNDED.button)}>
+            Wroc
           </button>
         </div>
       </div>
@@ -80,14 +67,10 @@ export function DancerDetailPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] pb-36">
-      {/* HERO - Full viewport impact */}
+      {/* Hero */}
       <div className="relative h-[75vh] min-h-[480px] max-h-[640px]">
         {dancer.profile_photo_url ? (
-          <img
-            src={dancer.profile_photo_url}
-            alt={`Zdjęcie profilowe ${dancer.name}`}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <img src={dancer.profile_photo_url} alt={`Zdjecie profilowe ${dancer.name}`} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -98,65 +81,63 @@ export function DancerDetailPage() {
           </div>
         )}
 
-        {/* Dark gradient overlay */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/10" />
 
         {/* Top bar */}
-        <div className="absolute top-0 left-0 right-0 pt-12 px-4 flex justify-between items-start">
+        <div className="absolute top-0 left-0 right-0 pt-13 px-5 flex justify-between items-start">
           <button
             onClick={() => navigate(-1)}
-            aria-label="Wróć"
-            className="w-10 h-10 rounded-xl bg-black/20 backdrop-blur-md flex items-center justify-center"
+            aria-label="Wroc"
+            className={cn(ICON_CONTAINER.md, 'bg-black/20 backdrop-blur-md flex items-center justify-center', ROUNDED.avatarRounded)}
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className={cn(ICON.md, 'text-white')} />
           </button>
 
-          {/* Badges stack */}
-          <div className="flex flex-col gap-1.5">
+          {/* Badges */}
+          <div className={cn('flex flex-col', GAP.sm)}>
             {dancer.is_matched && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-accent-mint)]">
-                <Sparkles className="w-3 h-3 text-white" />
-                <span className="text-[9px] font-bold text-white tracking-wider">MATCH</span>
+              <div className={cn(BADGE.standard, 'bg-[var(--color-accent-mint)] flex items-center gap-1')}>
+                <Sparkles className={cn(ICON.xs, 'text-white')} />
+                <span className="text-white tracking-wider">MATCH</span>
               </div>
             )}
             {!dancer.is_matched && dancer.liked_me && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-accent-hot)]">
-                <Heart className="w-3 h-3 text-white fill-current" />
-                <span className="text-[9px] font-bold text-white tracking-wider">LUBI CIĘ</span>
+              <div className={cn(BADGE.standard, 'bg-[var(--color-accent-hot)] flex items-center gap-1')}>
+                <Heart className={cn(ICON.xs, 'text-white fill-current')} />
+                <span className="text-white tracking-wider">LUBI CIE</span>
               </div>
             )}
             {dancer.is_trainer && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[var(--color-brand)]">
-                <Crown className="w-3 h-3 text-white" />
+              <div className={cn(BADGE.icon, 'bg-[var(--color-brand)]')}>
+                <Crown className={cn(ICON.xs, 'text-white')} />
               </div>
             )}
             {dancer.is_verified && (
-              <div className="w-7 h-7 rounded-lg bg-blue-500 flex items-center justify-center">
-                <Award className="w-3.5 h-3.5 text-white" />
+              <div className={cn(BADGE.icon, 'bg-blue-500')}>
+                <Award className={cn(ICON.xs, 'text-white')} />
               </div>
             )}
           </div>
         </div>
 
-        {/* Name overlay - TIGHT typography */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
+        {/* Name overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-5">
           <h1 className="text-display-lg text-white tracking-tight">
             {dancer.name}
-            {dancer.age && (
-              <span className="font-normal text-white/60 ml-1">{dancer.age}</span>
-            )}
+            {dancer.age && <span className="font-normal text-white/60 ml-2">{dancer.age}</span>}
           </h1>
 
-          <div className="flex items-center gap-3 mt-1">
+          <div className={cn('flex items-center mt-1', GAP.md)}>
             {dancer.city && (
-              <span className="flex items-center gap-1 text-white/60 text-sm">
-                <MapPin className="w-3.5 h-3.5" />
+              <span className={cn('flex items-center text-white/60 text-sm', GAP.xs)}>
+                <MapPin className={ICON.xs} />
                 {dancer.city}
               </span>
             )}
             {dancer.height && (
-              <span className="flex items-center gap-1 text-white/60 text-sm">
-                <Ruler className="w-3.5 h-3.5" />
+              <span className={cn('flex items-center text-white/60 text-sm', GAP.xs)}>
+                <Ruler className={ICON.xs} />
                 {dancer.height}cm
               </span>
             )}
@@ -164,36 +145,37 @@ export function DancerDetailPage() {
         </div>
       </div>
 
-      {/* CONTENT */}
-      <div className="px-4 pt-5 space-y-4">
-        {/* Bio - Clean text with breathing room */}
+      {/* Content */}
+      <div className={LAYOUT.section}>
+        {/* Bio */}
         {dancer.bio && (
-          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed py-2">
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed py-3">
             {dancer.bio}
           </p>
         )}
 
-        {/* Dance styles - Compact list */}
+        {/* Dance styles */}
         {dancer.dance_styles && dancer.dance_styles.length > 0 && (
-          <div className="card-premium overflow-hidden">
+          <div className={cn('card-premium overflow-hidden mt-5', ROUNDED.card)}>
             {dancer.dance_styles.map((style, idx) => (
               <div
                 key={idx}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3',
-                  idx !== dancer.dance_styles!.length - 1 && 'border-b border-black/[0.03]'
+                  'flex items-center',
+                  LIST_ITEM.padding,
+                  idx !== dancer.dance_styles!.length - 1 && LIST_ITEM.border
                 )}
               >
-                <div className="w-9 h-9 rounded-xl bg-[var(--color-brand-lighter)] flex items-center justify-center">
-                  <Music className="w-4 h-4 text-[var(--color-brand)]" />
+                <div className={cn(ICON_CONTAINER.sm, 'bg-[var(--color-brand-lighter)] flex items-center justify-center')}>
+                  <Music className={cn(ICON.sm, 'text-[var(--color-brand)]')} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-headline-sm block truncate">{style.style_name}</span>
                   <span className="text-caption text-xs">{getSkillLevelLabel(style.skill_level)}</span>
                 </div>
                 {style.is_teaching && (
-                  <div className="px-2 py-0.5 rounded-md bg-[var(--color-brand-lighter)]">
-                    <span className="text-[8px] font-bold text-[var(--color-brand)] tracking-wider">UCZY</span>
+                  <div className={cn(BADGE.inline, 'bg-[var(--color-brand-lighter)] text-[var(--color-brand)]')}>
+                    UCZY
                   </div>
                 )}
               </div>
@@ -202,37 +184,37 @@ export function DancerDetailPage() {
         )}
       </div>
 
-      {/* FLOATING ACTIONS - Pill style */}
-      <div className="fixed bottom-24 left-4 right-4 z-20">
-        <div className="flex gap-2.5 max-w-md mx-auto" role="group" aria-label="Akcje profilu">
+      {/* Floating actions */}
+      <div className={LAYOUT.floatingAction}>
+        <div className={cn('flex max-w-md mx-auto', GAP.md)} role="group" aria-label="Akcje profilu">
           <button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
             aria-label={dancer.i_liked ? 'Cofnij polubienie' : 'Polub'}
             aria-pressed={dancer.i_liked}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
-              dancer.i_liked
-                ? 'bg-[var(--color-accent-hot)] text-white'
-                : 'bg-white text-[var(--color-text-primary)]'
+              'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
+              GAP.sm,
+              ROUNDED.button,
+              dancer.i_liked ? 'bg-[var(--color-accent-hot)] text-white' : 'bg-white text-[var(--color-text-primary)]'
             )}
           >
-            <Heart className={cn('w-5 h-5', dancer.i_liked && 'fill-current')} />
+            <Heart className={cn(ICON.md, dancer.i_liked && 'fill-current')} />
             <span className="text-sm">{dancer.i_liked ? 'Lubisz' : 'Polub'}</span>
           </button>
 
           <button
             disabled={!dancer.is_matched || getOrCreateConversation.isPending}
             onClick={handleMessage}
-            aria-label={dancer.is_matched ? 'Napisz wiadomość' : 'Najpierw musisz się dopasować'}
+            aria-label={dancer.is_matched ? 'Napisz wiadomosc' : 'Najpierw musisz sie dopasowac'}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold shadow-lg transition-all',
-              dancer.is_matched
-                ? 'bg-[var(--color-brand)] text-white'
-                : 'bg-white/60 text-[var(--color-text-tertiary)]'
+              'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
+              GAP.sm,
+              ROUNDED.button,
+              dancer.is_matched ? 'bg-[var(--color-brand)] text-white' : 'bg-white/60 text-[var(--color-text-tertiary)]'
             )}
           >
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className={ICON.md} />
             <span className="text-sm">
               {getOrCreateConversation.isPending ? 'Otwieranie...' : dancer.is_matched ? 'Napisz' : 'Dopasuj'}
             </span>

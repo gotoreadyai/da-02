@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Spinner } from '@/components/ui/Spinner'
+import { Spinner, InputField } from '@/components/ui'
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/lib/auth'
+import { SPACING, BUTTON, ICON, STATE_ICON } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -35,17 +37,15 @@ export function ForgotPasswordPage() {
   if (isSent) {
     return (
       <div className="text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-accent-mint)]/20 flex items-center justify-center">
-          <CheckCircle className="w-8 h-8 text-[var(--color-accent-mint)]" />
+        <div className={cn(STATE_ICON.container, STATE_ICON.success)}>
+          <CheckCircle className={cn(ICON.xl, 'text-[var(--color-accent-mint)]')} />
         </div>
         <h2 className="text-headline-lg mb-2">Sprawdź email</h2>
-        <p className="text-caption mb-6">
+        <p className="text-caption mb-5">
           Wysłaliśmy link do resetowania hasła na adres {email}
         </p>
         <Link to="/login">
-          <button className="w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm">
-            Wróć do logowania
-          </button>
+          <button className={BUTTON.primary}>Wróć do logowania</button>
         </Link>
       </div>
     )
@@ -54,41 +54,31 @@ export function ForgotPasswordPage() {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-headline-lg text-center mb-2">Resetuj hasło</h2>
-      <p className="text-caption text-center mb-6">
+      <p className="text-caption text-center mb-5">
         Podaj email, a wyślemy Ci link do resetowania hasła
       </p>
 
-      <div className="space-y-4 mb-6">
-        {/* Email */}
-        <div className="relative">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2">
-            <Mail className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-          </div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            disabled={isLoading}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all"
-          />
-        </div>
+      <div className={`${SPACING.stack} mb-5`}>
+        <InputField
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          disabled={isLoading}
+          icon={<Mail className={ICON.md} />}
+        />
       </div>
 
-      <div className="space-y-4">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center"
-        >
+      <div className={SPACING.stack}>
+        <button type="submit" disabled={isLoading} className={BUTTON.primary}>
           {isLoading ? <Spinner size="sm" className="border-white border-t-transparent" /> : 'Wyślij link'}
         </button>
 
         <Link
           to="/login"
-          className="w-full py-3 rounded-2xl text-[var(--color-brand)] text-body-sm font-medium flex items-center justify-center gap-2"
+          className="w-full py-3 text-[var(--color-brand)] text-body-sm font-medium flex items-center justify-center gap-2"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className={ICON.sm} />
           Wróć do logowania
         </Link>
       </div>

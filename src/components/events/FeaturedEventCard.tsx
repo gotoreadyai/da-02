@@ -1,6 +1,6 @@
 import { MapPin, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { getGradientForName } from '@/lib/constants'
+import { getGradientForName, ROUNDED, BADGE, ICON } from '@/lib/constants'
 import { getEventTypeLabel } from '@/lib/utils'
 import type { EventWithCounts } from '@/types/database'
 
@@ -20,11 +20,12 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
       className="flex-shrink-0 w-40 text-left active:scale-[0.97] transition-transform"
     >
       <div className={cn(
-        'relative aspect-[4/5] rounded-2xl overflow-hidden shadow-md',
+        'relative aspect-[4/5] overflow-hidden shadow-md',
+        ROUNDED.card,
         `bg-gradient-to-br ${gradient}`
       )}>
         {/* Date badge */}
-        <div className="absolute top-2 left-2 bg-white/95 rounded-xl px-2.5 py-1.5 shadow-sm">
+        <div className={cn('absolute top-2 left-2 bg-white/95 px-3 py-2 shadow-sm', ROUNDED.pill)}>
           <span className="text-xl font-bold text-[var(--color-text-primary)] leading-none block">
             {startDate.getDate()}
           </span>
@@ -35,8 +36,8 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
 
         {/* Free badge */}
         {event.price === 0 && (
-          <div className="absolute top-2 right-2 w-6 h-6 rounded-md bg-[var(--color-accent-mint)] flex items-center justify-center">
-            <Star className="w-3 h-3 text-white" />
+          <div className={cn('absolute top-2 right-2', BADGE.icon, 'bg-[var(--color-accent-mint)]')}>
+            <Star className={cn(ICON.xs, 'text-white')} />
           </div>
         )}
 
@@ -44,7 +45,7 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
         {/* Content */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5">
+        <div className="absolute inset-x-0 bottom-0 p-3">
           <span className="text-[9px] font-semibold text-white/60 uppercase tracking-wider">
             {getEventTypeLabel(event.event_type)}
           </span>

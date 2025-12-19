@@ -1,4 +1,6 @@
 import { Outlet } from 'react-router-dom'
+import { cn } from '@/lib/utils'
+import { LOGO, ROUNDED } from '@/lib/constants'
 
 export function AuthLayout() {
   return (
@@ -9,15 +11,15 @@ export function AuthLayout() {
           <div className="w-full max-w-sm">
             {/* Logo */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-md mb-4">
+              <div className={cn('inline-flex items-center justify-center bg-white/20 backdrop-blur-md mb-4', LOGO.container)}>
                 <span className="text-4xl">💃</span>
               </div>
               <h1 className="text-display-lg text-white">DanceMatch</h1>
-              <p className="text-body-md text-white/80 mt-2">Znajdź swojego partnera do tańca</p>
+              <p className="text-body-md text-white/80 mt-2">Znajdz swojego partnera do tanca</p>
             </div>
 
             {/* Auth form container */}
-            <div className="card-premium p-6">
+            <div className={cn('card-premium p-6', ROUNDED.card)}>
               <Outlet />
             </div>
           </div>
