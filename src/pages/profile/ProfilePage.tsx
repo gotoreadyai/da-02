@@ -12,6 +12,8 @@ import {
   Star,
   CreditCard,
   Crown,
+  Bell,
+  Shield,
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/auth'
 import { useMyProfile, useMyDanceStyles } from '@/features/profile/api'
@@ -34,195 +36,185 @@ export function ProfilePage() {
   const menuItems = [
     {
       icon: User,
-      label: 'Informacje osobiste',
+      label: 'Personal Information',
+      description: 'Update your details',
       onClick: () => navigate('/profile/edit'),
-      color: 'text-brand-500',
-      bgColor: 'bg-brand-100',
     },
     {
       icon: Music,
-      label: 'Style taneczne',
+      label: 'Dance Information',
+      description: 'Styles and preferences',
       onClick: () => navigate('/profile/edit'),
-      color: 'text-pink-500',
-      bgColor: 'bg-pink-100',
     },
     {
       icon: Calendar,
-      label: 'Moje wydarzenia',
+      label: 'My Events',
+      description: 'View your events',
       onClick: () => navigate('/events'),
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-100',
     },
     {
       icon: CreditCard,
-      label: 'Historia platnosci',
+      label: 'Payment History',
+      description: 'Transactions and receipts',
       onClick: () => {},
-      color: 'text-green-500',
-      bgColor: 'bg-green-100',
     },
     {
       icon: Crown,
-      label: 'Plan subskrypcji',
+      label: 'Subscription Plan',
+      description: 'Manage your plan',
       onClick: () => {},
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-100',
     },
   ]
 
   return (
     <div className="min-h-screen pb-8">
-      {/* Header with profile photo */}
-      <div className="relative pt-14 pb-8 px-5">
-        {/* Background decoration */}
-        <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-br from-brand-500/10 via-pink-500/10 to-orange-500/10 rounded-b-[3rem]" />
+      {/* Header */}
+      <header className="px-6 pt-14 pb-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-headline-lg">Profile</h1>
+          <button className="w-10 h-10 rounded-full bg-white/80 backdrop-blur shadow-sm flex items-center justify-center">
+            <Settings className="w-5 h-5 text-[var(--color-text-secondary)]" />
+          </button>
+        </div>
 
-        {/* Profile photo */}
-        <div className="relative flex flex-col items-center">
-          <div className="w-28 h-28 rounded-3xl bg-white shadow-card border-4 border-white overflow-hidden mb-4">
-            {profile.profile_photo_url ? (
-              <img
-                src={profile.profile_photo_url}
-                alt={profile.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-400 to-accent-pink flex items-center justify-center">
-                <span className="text-4xl font-bold text-white">
-                  {getInitials(profile.name)}
-                </span>
+        {/* Profile Card */}
+        <div className="card-premium p-6">
+          <div className="flex items-center gap-4 mb-6">
+            {/* Avatar */}
+            <div className="relative">
+              <div className="w-20 h-20 rounded-full overflow-hidden ring-4 ring-[var(--color-brand-light)] shadow-lg">
+                {profile.profile_photo_url ? (
+                  <img
+                    src={profile.profile_photo_url}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+                    <span className="text-2xl font-light text-white/90">
+                      {getInitials(profile.name)}
+                    </span>
+                  </div>
+                )}
               </div>
-            )}
+              {profile.is_verified && (
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-blue-500 border-3 border-white flex items-center justify-center">
+                  <Award className="w-4 h-4 text-white" />
+                </div>
+              )}
+            </div>
+
+            {/* Name & badges */}
+            <div className="flex-1">
+              <h2 className="text-display-md text-[var(--color-text-primary)] mb-1">
+                {profile.name}
+              </h2>
+              <div className="flex items-center gap-2">
+                {profile.is_trainer && (
+                  <span className="badge badge-brand">
+                    <Star className="w-3 h-3" />
+                    Trainer
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">{profile.name}</h1>
-
-          <div className="flex items-center gap-2 mb-4">
-            {profile.is_verified && (
-              <span className="bg-blue-100 text-blue-600 text-xs px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
-                <Award className="w-3 h-3" />
-                Zweryfikowany
-              </span>
-            )}
-            {profile.is_trainer && (
-              <span className="bg-purple-100 text-purple-600 text-xs px-2.5 py-1 rounded-full flex items-center gap-1 font-medium">
-                <Star className="w-3 h-3" />
-                Trener
-              </span>
-            )}
+          {/* Stats Grid */}
+          <div className="text-label text-[var(--color-text-tertiary)] mb-3">
+            Your Dance Journey
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <StatCard value={danceStyles?.length || 0} label="Dance Styles" icon={Music} />
+            <StatCard value={0} label="Events" icon={Calendar} />
+            <StatCard value={0} label="Matches" icon={Heart} />
+            <StatCard value={0} label="Connections" icon={Users} />
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Dance Journey Stats */}
-      <div className="px-5 mb-6">
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-          Twoja podraz taneczna
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          <StatCard
-            value={danceStyles?.length || 0}
-            label="Stylii tanca"
-            icon={Music}
-            color="brand"
-          />
-          <StatCard
-            value={0}
-            label="Wydarzen"
-            icon={Calendar}
-            color="pink"
-          />
-          <StatCard
-            value={0}
-            label="Polubien"
-            icon={Heart}
-            color="red"
-          />
-          <StatCard
-            value={0}
-            label="Dopasowan"
-            icon={Users}
-            color="green"
-          />
-        </div>
-      </div>
-
-      {/* Menu items */}
-      <div className="px-5 mb-6">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 overflow-hidden">
+      {/* Menu Items */}
+      <section className="px-6 mb-6">
+        <div className="card-premium overflow-hidden">
           {menuItems.map((item, index) => (
             <button
               key={item.label}
               onClick={item.onClick}
               className={cn(
-                'w-full flex items-center gap-4 p-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors text-left',
-                index !== menuItems.length - 1 && 'border-b border-gray-100'
+                'w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left',
+                index !== menuItems.length - 1 && 'border-b border-black/[0.04]'
               )}
             >
-              <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', item.bgColor)}>
-                <item.icon className={cn('w-5 h-5', item.color)} />
+              <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+                <item.icon className="w-5 h-5 text-[var(--color-brand-dark)]" />
               </div>
-              <span className="flex-1 font-medium text-gray-900">{item.label}</span>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <div className="flex-1">
+                <span className="text-headline-sm block mb-0.5">{item.label}</span>
+                <span className="text-caption">{item.description}</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[var(--color-text-tertiary)]" />
             </button>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Settings section */}
-      <div className="px-5 mb-6">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-card border border-white/20 overflow-hidden">
-          <button
-            onClick={() => {}}
-            className="w-full flex items-center gap-4 p-4 hover:bg-gray-50/50 active:bg-gray-100/50 transition-colors text-left"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-              <Settings className="w-5 h-5 text-gray-500" />
+      {/* Settings Section */}
+      <section className="px-6 mb-6">
+        <div className="card-premium overflow-hidden">
+          <button className="w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left border-b border-black/[0.04]">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-bg)] flex items-center justify-center">
+              <Bell className="w-5 h-5 text-[var(--color-text-secondary)]" />
             </div>
-            <span className="flex-1 font-medium text-gray-900">Ustawienia</span>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
+            <div className="flex-1">
+              <span className="text-headline-sm block mb-0.5">Notifications</span>
+              <span className="text-caption">Manage alerts</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </button>
+          <button className="w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-bg)] flex items-center justify-center">
+              <Shield className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            </div>
+            <div className="flex-1">
+              <span className="text-headline-sm block mb-0.5">Privacy & Security</span>
+              <span className="text-caption">Account settings</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[var(--color-text-tertiary)]" />
           </button>
         </div>
-      </div>
+      </section>
 
-      {/* Logout button */}
-      <div className="px-5">
+      {/* Logout */}
+      <section className="px-6">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 p-4 bg-red-50 hover:bg-red-100 active:bg-red-200 rounded-2xl transition-colors"
+          className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-red-50 hover:bg-red-100 active:bg-red-200 transition-colors"
         >
           <LogOut className="w-5 h-5 text-red-500" />
-          <span className="font-semibold text-red-500">Wyloguj sie</span>
+          <span className="text-headline-sm text-red-500">Sign Out</span>
         </button>
-      </div>
+      </section>
     </div>
   )
 }
 
-// Stat card component
+// Stat Card Component
 interface StatCardProps {
   value: number
   label: string
   icon: React.ElementType
-  color: 'brand' | 'pink' | 'red' | 'green'
 }
 
-function StatCard({ value, label, icon: Icon, color }: StatCardProps) {
-  const colorClasses = {
-    brand: 'text-brand-600 bg-brand-100',
-    pink: 'text-pink-600 bg-pink-100',
-    red: 'text-red-600 bg-red-100',
-    green: 'text-green-600 bg-green-100',
-  }
-
+function StatCard({ value, label, icon: Icon }: StatCardProps) {
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-soft border border-white/20">
+    <div className="bg-[var(--color-bg)] rounded-2xl p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-3xl font-bold text-gray-900">{value}</span>
-        <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', colorClasses[color].split(' ')[1])}>
-          <Icon className={cn('w-5 h-5', colorClasses[color].split(' ')[0])} />
+        <span className="text-display-md text-[var(--color-text-primary)]">{value}</span>
+        <div className="w-9 h-9 rounded-xl bg-[var(--color-brand-light)] flex items-center justify-center">
+          <Icon className="w-4 h-4 text-[var(--color-brand-dark)]" />
         </div>
       </div>
-      <p className="text-sm text-gray-500">{label}</p>
+      <span className="text-caption">{label}</span>
     </div>
   )
 }

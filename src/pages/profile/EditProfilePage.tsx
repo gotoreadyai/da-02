@@ -1,18 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Navbar,
-  NavbarBackLink,
-  List,
-  ListInput,
-  ListItem,
-  Block,
-  BlockTitle,
-  Button,
-  Toggle,
-  Preloader,
-} from 'konsta/react'
-import { Camera, Trash2, Plus, Music } from 'lucide-react'
+import { Spinner } from '@/components/ui/Spinner'
+import { ArrowLeft, Camera, Trash2, Plus, Music, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   useMyProfile,
@@ -21,8 +10,8 @@ import {
   useUploadProfilePhoto,
   useRemoveDanceStyle,
 } from '@/features/profile/api'
-import { useDanceStyles } from '@/features/events/api'
 import { getSkillLevelLabel, getInitials } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 export function EditProfilePage() {
   const navigate = useNavigate()
@@ -30,7 +19,6 @@ export function EditProfilePage() {
 
   const { data: profile } = useMyProfile()
   const { data: myDanceStyles } = useMyDanceStyles()
-  const { data: allDanceStyles } = useDanceStyles()
 
   const updateMutation = useUpdateProfile()
   const uploadPhotoMutation = useUploadProfilePhoto()
@@ -105,17 +93,23 @@ export function EditProfilePage() {
   if (!profile) return null
 
   return (
-    <div className="pb-32">
-      <Navbar
-        left={<NavbarBackLink onClick={() => navigate(-1)} />}
-        title="Edytuj profil"
-      />
+    <div className="min-h-screen pb-32">
+      {/* Header */}
+      <header className="px-6 pt-14 pb-6">
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center"
+          >
+            <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
+          </button>
+          <h1 className="text-headline-lg">Edytuj profil</h1>
+        </div>
 
-      {/* Profile photo */}
-      <Block>
+        {/* Profile photo */}
         <div className="flex flex-col items-center">
           <div className="relative">
-            <div className="w-28 h-28 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center overflow-hidden">
+            <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-[var(--color-brand-light)] shadow-lg">
               {profile.profile_photo_url ? (
                 <img
                   src={profile.profile_photo_url}
@@ -123,21 +117,23 @@ export function EditProfilePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-4xl font-bold text-brand-600">
-                  {getInitials(profile.name)}
-                </span>
+                <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+                  <span className="text-3xl font-light text-white/90">
+                    {getInitials(profile.name)}
+                  </span>
+                </div>
               )}
 
               {uploadPhotoMutation.isPending && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <Preloader className="text-white" />
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full">
+                  <Spinner size="md" className="border-white border-t-transparent" />
                 </div>
               )}
             </div>
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-lg"
+              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[var(--color-brand)] text-white flex items-center justify-center shadow-lg"
             >
               <Camera className="w-5 h-5" />
             </button>
@@ -151,116 +147,202 @@ export function EditProfilePage() {
             className="hidden"
           />
 
-          <p className="text-sm text-gray-500 mt-2">
-            Dotknij, aby zmienić zdjęcie
-          </p>
+          <p className="text-caption mt-3">Dotknij, aby zmienić zdjęcie</p>
         </div>
-      </Block>
+      </header>
 
       {/* Basic info */}
-      <BlockTitle>Podstawowe informacje</BlockTitle>
-      <List strongIos insetIos>
-        <ListInput
-          label="Imię"
-          type="text"
-          placeholder="Twoje imię"
-          value={formData.name}
-          onChange={(e) => handleChange('name', e.target.value)}
-        />
-        <ListInput
-          label="Wiek"
-          type="number"
-          placeholder="np. 25"
-          value={formData.age}
-          onChange={(e) => handleChange('age', e.target.value)}
-        />
-        <ListInput
-          label="Wzrost (cm)"
-          type="number"
-          placeholder="np. 175"
-          value={formData.height}
-          onChange={(e) => handleChange('height', e.target.value)}
-        />
-        <ListInput
-          label="Miasto"
-          type="text"
-          placeholder="np. Warszawa"
-          value={formData.city}
-          onChange={(e) => handleChange('city', e.target.value)}
-        />
-      </List>
+      <section className="px-6 mb-6">
+        <h2 className="text-headline-md mb-4">Podstawowe informacje</h2>
+        <div className="card-premium overflow-hidden">
+          {/* Name */}
+          <div className="flex items-center gap-4 p-4 border-b border-black/[0.04]">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+              <User className="w-5 h-5 text-[var(--color-brand-dark)]" />
+            </div>
+            <div className="flex-1">
+              <label className="text-caption block mb-1">Imię</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                placeholder="Twoje imię"
+                className="w-full text-headline-sm bg-transparent outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Age */}
+          <div className="flex items-center gap-4 p-4 border-b border-black/[0.04]">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+              <User className="w-5 h-5 text-[var(--color-brand-dark)]" />
+            </div>
+            <div className="flex-1">
+              <label className="text-caption block mb-1">Wiek</label>
+              <input
+                type="number"
+                value={formData.age}
+                onChange={(e) => handleChange('age', e.target.value)}
+                placeholder="np. 25"
+                className="w-full text-headline-sm bg-transparent outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Height */}
+          <div className="flex items-center gap-4 p-4 border-b border-black/[0.04]">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+              <Ruler className="w-5 h-5 text-[var(--color-brand-dark)]" />
+            </div>
+            <div className="flex-1">
+              <label className="text-caption block mb-1">Wzrost (cm)</label>
+              <input
+                type="number"
+                value={formData.height}
+                onChange={(e) => handleChange('height', e.target.value)}
+                placeholder="np. 175"
+                className="w-full text-headline-sm bg-transparent outline-none"
+              />
+            </div>
+          </div>
+
+          {/* City */}
+          <div className="flex items-center gap-4 p-4">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-[var(--color-brand-dark)]" />
+            </div>
+            <div className="flex-1">
+              <label className="text-caption block mb-1">Miasto</label>
+              <input
+                type="text"
+                value={formData.city}
+                onChange={(e) => handleChange('city', e.target.value)}
+                placeholder="np. Warszawa"
+                className="w-full text-headline-sm bg-transparent outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Bio */}
-      <BlockTitle>O mnie</BlockTitle>
-      <List strongIos insetIos>
-        <ListInput
-          label="Bio"
-          type="textarea"
-          placeholder="Napisz coś o sobie..."
-          value={formData.bio}
-          onChange={(e) => handleChange('bio', e.target.value)}
-          inputClassName="!h-32"
-        />
-      </List>
+      <section className="px-6 mb-6">
+        <h2 className="text-headline-md mb-4">O mnie</h2>
+        <div className="card-premium p-4">
+          <div className="flex items-start gap-4">
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center flex-shrink-0">
+              <FileText className="w-5 h-5 text-[var(--color-brand-dark)]" />
+            </div>
+            <textarea
+              value={formData.bio}
+              onChange={(e) => handleChange('bio', e.target.value)}
+              placeholder="Napisz coś o sobie..."
+              rows={4}
+              className="flex-1 text-body-md bg-transparent outline-none resize-none"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Privacy settings */}
-      <BlockTitle>Prywatność</BlockTitle>
-      <List strongIos insetIos>
-        <ListItem
-          title="Pokaż wiek"
-          after={
-            <Toggle
-              checked={formData.show_age}
-              onChange={() => handleChange('show_age', !formData.show_age)}
-            />
-          }
-        />
-        <ListItem
-          title="Pokaż dokładną lokalizację"
-          after={
-            <Toggle
-              checked={formData.show_exact_location}
-              onChange={() =>
-                handleChange('show_exact_location', !formData.show_exact_location)
-              }
-            />
-          }
-        />
-        <ListItem
-          title="Jestem trenerem"
-          after={
-            <Toggle
-              checked={formData.is_trainer}
-              onChange={() => handleChange('is_trainer', !formData.is_trainer)}
-            />
-          }
-        />
-      </List>
+      <section className="px-6 mb-6">
+        <h2 className="text-headline-md mb-4">Prywatność</h2>
+        <div className="card-premium overflow-hidden">
+          {/* Show age */}
+          <button
+            onClick={() => handleChange('show_age', !formData.show_age)}
+            className="w-full flex items-center gap-4 p-4 border-b border-black/[0.04] text-left"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-bg)] flex items-center justify-center">
+              <Shield className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            </div>
+            <div className="flex-1">
+              <span className="text-headline-sm block">Pokaż wiek</span>
+              <span className="text-caption">Inni zobaczą Twój wiek</span>
+            </div>
+            <div className={cn(
+              'w-12 h-7 rounded-full transition-colors relative',
+              formData.show_age ? 'bg-[var(--color-brand)]' : 'bg-black/20'
+            )}>
+              <div className={cn(
+                'absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform',
+                formData.show_age ? 'translate-x-6' : 'translate-x-1'
+              )} />
+            </div>
+          </button>
+
+          {/* Show location */}
+          <button
+            onClick={() => handleChange('show_exact_location', !formData.show_exact_location)}
+            className="w-full flex items-center gap-4 p-4 border-b border-black/[0.04] text-left"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-bg)] flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            </div>
+            <div className="flex-1">
+              <span className="text-headline-sm block">Dokładna lokalizacja</span>
+              <span className="text-caption">Pokaż dokładne miasto</span>
+            </div>
+            <div className={cn(
+              'w-12 h-7 rounded-full transition-colors relative',
+              formData.show_exact_location ? 'bg-[var(--color-brand)]' : 'bg-black/20'
+            )}>
+              <div className={cn(
+                'absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform',
+                formData.show_exact_location ? 'translate-x-6' : 'translate-x-1'
+              )} />
+            </div>
+          </button>
+
+          {/* Is trainer */}
+          <button
+            onClick={() => handleChange('is_trainer', !formData.is_trainer)}
+            className="w-full flex items-center gap-4 p-4 text-left"
+          >
+            <div className="w-11 h-11 rounded-2xl bg-[var(--color-bg)] flex items-center justify-center">
+              <GraduationCap className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            </div>
+            <div className="flex-1">
+              <span className="text-headline-sm block">Jestem trenerem</span>
+              <span className="text-caption">Oznacz profil jako trener</span>
+            </div>
+            <div className={cn(
+              'w-12 h-7 rounded-full transition-colors relative',
+              formData.is_trainer ? 'bg-[var(--color-brand)]' : 'bg-black/20'
+            )}>
+              <div className={cn(
+                'absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-transform',
+                formData.is_trainer ? 'translate-x-6' : 'translate-x-1'
+              )} />
+            </div>
+          </button>
+        </div>
+      </section>
 
       {/* Dance styles */}
-      <BlockTitle>Style tańca</BlockTitle>
-      <Block>
+      <section className="px-6 mb-6">
+        <h2 className="text-headline-md mb-4">Style tańca</h2>
+
         {myDanceStyles && myDanceStyles.length > 0 ? (
-          <div className="space-y-3">
-            {myDanceStyles.map((style) => (
+          <div className="card-premium overflow-hidden">
+            {myDanceStyles.map((style, index) => (
               <div
                 key={style.id}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl"
+                className={cn(
+                  'flex items-center gap-4 p-4',
+                  index !== myDanceStyles.length - 1 && 'border-b border-black/[0.04]'
+                )}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
-                    <Music className="w-5 h-5 text-brand-500" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{style.dance_style?.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {getSkillLevelLabel(style.skill_level)}
-                    </p>
-                  </div>
+                <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+                  <Music className="w-5 h-5 text-[var(--color-brand-dark)]" />
+                </div>
+                <div className="flex-1">
+                  <span className="text-headline-sm block">{style.dance_style?.name}</span>
+                  <span className="text-caption">{getSkillLevelLabel(style.skill_level)}</span>
                 </div>
                 <button
                   onClick={() => handleRemoveDanceStyle(style.id)}
-                  className="w-10 h-10 rounded-full text-red-500 flex items-center justify-center"
+                  className="w-10 h-10 rounded-full text-[var(--color-accent-coral)] flex items-center justify-center"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -268,32 +350,33 @@ export function EditProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6">
-            <Music className="w-12 h-12 mx-auto text-gray-300 mb-2" />
-            <p className="text-gray-500">Nie dodano żadnych stylów</p>
+          <div className="card-premium p-8 text-center">
+            <div className="w-16 h-16 rounded-full bg-[var(--color-bg)] flex items-center justify-center mx-auto mb-4">
+              <Music className="w-7 h-7 text-[var(--color-text-tertiary)]" />
+            </div>
+            <h3 className="text-headline-sm mb-1">Brak stylów</h3>
+            <p className="text-caption">Nie dodano żadnych stylów tańca</p>
           </div>
         )}
 
-        <Button
-          className="w-full mt-4 !bg-gray-100 dark:!bg-gray-800 !text-gray-900 dark:!text-white"
-        >
-          <Plus className="w-5 h-5 mr-2" />
+        <button className="w-full mt-4 flex items-center justify-center gap-2 py-4 rounded-2xl bg-[var(--color-bg)] text-[var(--color-text-primary)] border border-black/[0.04] text-headline-sm">
+          <Plus className="w-5 h-5" />
           Dodaj styl tańca
-        </Button>
-      </Block>
+        </button>
+      </section>
 
-      {/* Save button */}
-      <div className="fixed bottom-20 left-0 right-0 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700">
+      {/* Fixed bottom save button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-black/[0.04]">
         <div className="max-w-lg mx-auto">
-          <Button
-            large
-            className="w-full !bg-brand-500 active:!bg-brand-600"
+          <button
             onClick={handleSave}
             disabled={updateMutation.isPending}
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50"
           >
             {updateMutation.isPending ? 'Zapisywanie...' : 'Zapisz zmiany'}
-          </Button>
+          </button>
         </div>
+        <div className="h-[env(safe-area-inset-bottom)]" />
       </div>
     </div>
   )

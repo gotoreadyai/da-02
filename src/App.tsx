@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { App as KonstaApp } from 'konsta/react'
 import { Toaster } from 'sonner'
 
 import { queryClient } from '@/lib/queryClient'
@@ -32,7 +31,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[var(--color-brand)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -51,7 +50,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[var(--color-brand)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -73,16 +72,15 @@ export function App() {
 
   if (!isReady) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-ios-light-surface dark:bg-ios-dark-surface">
-        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg)]">
+        <div className="w-8 h-8 border-4 border-[var(--color-brand)] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <KonstaApp theme="ios" safeAreas>
-        <BrowserRouter>
+      <BrowserRouter>
           <Routes>
             {/* Auth routes */}
             <Route element={<AuthLayout />}>
@@ -133,15 +131,14 @@ export function App() {
             <Route path="/" element={<Navigate to="/dancers" replace />} />
             <Route path="*" element={<Navigate to="/dancers" replace />} />
           </Routes>
-        </BrowserRouter>
 
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            className: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
-          }}
-        />
-      </KonstaApp>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              className: 'bg-[var(--color-bg-card)] text-[var(--color-text-primary)] shadow-lg rounded-2xl',
+            }}
+          />
+        </BrowserRouter>
     </QueryClientProvider>
   )
 }

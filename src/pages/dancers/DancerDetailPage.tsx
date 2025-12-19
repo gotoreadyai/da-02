@@ -1,14 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { Spinner } from '@/components/ui/Spinner'
 import {
-  Navbar,
-  NavbarBackLink,
-  Block,
-  BlockTitle,
-  Chip,
-  Button,
-  Preloader,
-} from 'konsta/react'
-import {
+  ArrowLeft,
   MapPin,
   Ruler,
   Calendar,
@@ -18,6 +11,7 @@ import {
   Heart,
   MessageCircle,
   Sparkles,
+  Crown,
 } from 'lucide-react'
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { cn, formatDate, getSkillLevelLabel } from '@/lib/utils'
@@ -42,33 +36,40 @@ export function DancerDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Preloader />
+        <Spinner size="lg" />
       </div>
     )
   }
 
   if (isError || !dancer) {
     return (
-      <div>
-        <Navbar
-          left={<NavbarBackLink onClick={() => navigate(-1)} />}
-          title="Błąd"
-        />
-        <div className="flex flex-col items-center justify-center py-20">
-          <span className="text-6xl mb-4">😕</span>
-          <p className="text-gray-500">Nie znaleziono profilu</p>
-          <Button onClick={() => navigate('/dancers')} className="mt-4">
-            Wróć do listy
-          </Button>
-        </div>
+      <div className="min-h-screen">
+        <header className="px-6 pt-14 pb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center mb-6"
+          >
+            <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
+          </button>
+          <div className="card-premium p-8 text-center">
+            <span className="text-6xl mb-4 block">😕</span>
+            <h2 className="text-headline-md mb-2">Nie znaleziono profilu</h2>
+            <button
+              onClick={() => navigate('/dancers')}
+              className="mt-4 px-6 py-3 rounded-2xl bg-[var(--color-brand)] text-white text-body-sm font-medium"
+            >
+              Wróć do listy
+            </button>
+          </div>
+        </header>
       </div>
     )
   }
 
   return (
-    <div className="pb-32">
-      {/* Header with photo */}
-      <div className="relative h-96 bg-gradient-to-br from-brand-100 to-purple-100">
+    <div className="min-h-screen pb-32">
+      {/* Hero section with photo */}
+      <div className="relative h-[28rem]">
         {dancer.profile_photo_url ? (
           <img
             src={dancer.profile_photo_url}
@@ -76,67 +77,63 @@ export function DancerDetailPage() {
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-8xl">
-              {dancer.name?.charAt(0)?.toUpperCase() || '👤'}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+            <span className="text-[8rem] font-light text-white/80">
+              {dancer.name?.charAt(0)?.toUpperCase() || '?'}
             </span>
           </div>
         )}
 
+        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
         {/* Back button */}
-        <div className="absolute top-0 left-0 right-0 pt-safe">
-          <Navbar
-            transparent
-            left={
-              <NavbarBackLink
-                onClick={() => navigate(-1)}
-                className="text-white"
-              />
-            }
-          />
-        </div>
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-14 left-6 w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center"
+        >
+          <ArrowLeft className="w-5 h-5 text-white" />
+        </button>
 
         {/* Status badges */}
-        <div className="absolute top-16 right-4 flex flex-col gap-2">
+        <div className="absolute top-14 right-6 flex flex-col gap-2">
           {dancer.is_matched && (
-            <Chip className="!bg-green-500 !text-white">
-              <Sparkles className="w-4 h-4 mr-1" />
-              Dopasowanie!
-            </Chip>
+            <span className="badge badge-success shadow-lg">
+              <Sparkles className="w-3 h-3" />
+              MATCH
+            </span>
           )}
           {!dancer.is_matched && dancer.liked_me && (
-            <Chip className="!bg-brand-500 !text-white">
-              <Heart className="w-4 h-4 mr-1 fill-current" />
-              Lubi Cię!
-            </Chip>
+            <span className="badge badge-warning shadow-lg">
+              <Heart className="w-3 h-3 fill-current" />
+              LUBI CIĘ
+            </span>
           )}
         </div>
 
-        {/* Info overlay */}
+        {/* Info at bottom */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-3">
             {dancer.is_verified && (
-              <Chip className="!bg-blue-500 !text-white text-xs">
-                <Award className="w-3 h-3 mr-1" />
-                Zweryfikowany
-              </Chip>
+              <span className="badge bg-blue-500 text-white text-[10px]">
+                <Award className="w-3 h-3" />
+                ZWERYFIKOWANY
+              </span>
             )}
             {dancer.is_trainer && (
-              <Chip className="!bg-purple-500 !text-white text-xs">
-                <GraduationCap className="w-3 h-3 mr-1" />
-                Trener
-              </Chip>
+              <span className="badge badge-brand text-[10px]">
+                <Crown className="w-3 h-3" />
+                TRENER
+              </span>
             )}
           </div>
 
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-display-lg text-white mb-1">
             {dancer.name}
-            {dancer.age && <span className="font-normal">, {dancer.age}</span>}
+            {dancer.age && <span className="font-normal text-white/80">, {dancer.age}</span>}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 mt-2 text-white/80">
+          <div className="flex flex-wrap items-center gap-4 text-white/70 text-body-sm">
             {dancer.city && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -153,96 +150,97 @@ export function DancerDetailPage() {
         </div>
       </div>
 
-      {/* Bio */}
-      {dancer.bio && (
-        <>
-          <BlockTitle>O mnie</BlockTitle>
-          <Block>
-            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-              {dancer.bio}
-            </p>
-          </Block>
-        </>
-      )}
+      {/* Content */}
+      <div className="px-6 -mt-4 relative z-10">
+        {/* Bio */}
+        {dancer.bio && (
+          <section className="mb-6">
+            <div className="card-premium p-5">
+              <h3 className="text-label text-[var(--color-text-tertiary)] mb-2">O MNIE</h3>
+              <p className="text-body-md text-[var(--color-text-secondary)] whitespace-pre-wrap">
+                {dancer.bio}
+              </p>
+            </div>
+          </section>
+        )}
 
-      {/* Dance styles */}
-      {dancer.dance_styles && dancer.dance_styles.length > 0 && (
-        <>
-          <BlockTitle>Style tańca ({dancer.dance_styles.length})</BlockTitle>
-          <Block>
-            <div className="space-y-3">
+        {/* Dance styles */}
+        {dancer.dance_styles && dancer.dance_styles.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-headline-md mb-4">Style tańca</h2>
+            <div className="card-premium overflow-hidden">
               {dancer.dance_styles.map((style, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl"
+                  className={cn(
+                    'flex items-center gap-4 p-4',
+                    index !== dancer.dance_styles!.length - 1 && 'border-b border-black/[0.04]'
+                  )}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
-                      <Music className="w-5 h-5 text-brand-500" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{style.style_name}</p>
-                      <p className="text-sm text-gray-500">
-                        {getSkillLevelLabel(style.skill_level)}
-                      </p>
-                    </div>
+                  <div className="w-11 h-11 rounded-2xl bg-[var(--color-brand-light)] flex items-center justify-center">
+                    <Music className="w-5 h-5 text-[var(--color-brand-dark)]" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-headline-sm block">{style.style_name}</span>
+                    <span className="text-caption">{getSkillLevelLabel(style.skill_level)}</span>
                   </div>
                   {style.is_teaching && (
-                    <Chip className="!bg-purple-100 !text-purple-700 dark:!bg-purple-900/30 dark:!text-purple-300">
-                      Uczy
-                    </Chip>
+                    <span className="badge badge-brand">
+                      <GraduationCap className="w-3 h-3" />
+                      UCZY
+                    </span>
                   )}
                 </div>
               ))}
             </div>
-          </Block>
-        </>
-      )}
+          </section>
+        )}
 
-      {/* Profile details */}
-      <BlockTitle>Szczegóły</BlockTitle>
-      <Block>
-        <div className="flex items-center gap-3 text-gray-600 dark:text-gray-400">
-          <Calendar className="w-5 h-5" />
-          <span>
-            Dołączył {formatDate(dancer.created_at)}
-          </span>
-        </div>
-      </Block>
+        {/* Details */}
+        <section className="mb-6">
+          <h2 className="text-headline-md mb-4">Szczegóły</h2>
+          <div className="card-premium p-4">
+            <div className="flex items-center gap-3 text-[var(--color-text-secondary)]">
+              <Calendar className="w-5 h-5" />
+              <span className="text-body-sm">Dołączył {formatDate(dancer.created_at)}</span>
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* Fixed bottom actions */}
-      <div className="fixed bottom-20 left-0 right-0 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-black/[0.04]">
         <div className="flex gap-3 max-w-lg mx-auto">
-          <Button
-            large
-            className={cn(
-              'flex-1',
-              dancer.i_liked
-                ? '!bg-brand-500 active:!bg-brand-600'
-                : '!bg-gray-100 dark:!bg-gray-800 !text-gray-900 dark:!text-white'
-            )}
+          <button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-headline-sm transition-all',
+              dancer.i_liked
+                ? 'bg-[var(--color-accent-coral)] text-white'
+                : 'bg-[var(--color-bg)] text-[var(--color-text-primary)] border border-black/[0.04]'
+            )}
           >
-            <Heart
-              className={cn(
-                'w-5 h-5 mr-2',
-                dancer.i_liked && 'fill-current'
-              )}
-            />
+            <Heart className={cn('w-5 h-5', dancer.i_liked && 'fill-current')} />
             {dancer.i_liked ? 'Polubiono' : 'Polub'}
-          </Button>
+          </button>
 
-          <Button
-            large
-            className="flex-1 !bg-brand-500 active:!bg-brand-600"
+          <button
             disabled={!dancer.is_matched}
             onClick={() => navigate('/chat')}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-headline-sm transition-all',
+              dancer.is_matched
+                ? 'bg-[var(--color-brand)] text-white'
+                : 'bg-[var(--color-bg)] text-[var(--color-text-tertiary)] border border-black/[0.04]'
+            )}
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            {dancer.is_matched ? 'Napisz' : 'Najpierw dopasuj'}
-          </Button>
+            <MessageCircle className="w-5 h-5" />
+            {dancer.is_matched ? 'Napisz' : 'Dopasuj się'}
+          </button>
         </div>
+        {/* Safe area spacer */}
+        <div className="h-[env(safe-area-inset-bottom)]" />
       </div>
     </div>
   )

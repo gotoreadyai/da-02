@@ -1,16 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
-import {
-  Navbar,
-  Messagebar,
-  Messages,
-  Message,
-  MessagesTitle,
-  Preloader,
-} from 'konsta/react'
-import { Send } from 'lucide-react'
+import { Spinner } from '@/components/ui/Spinner'
+import { ArrowLeft, Send, MessageCircle } from 'lucide-react'
 import { useConversations, useMessages, useSendMessage, useMarkAsRead } from '@/features/chat/api'
 import { useAuthStore } from '@/lib/auth'
 import { formatRelativeTime, getInitials } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 export function ChatPage() {
   const user = useAuthStore((state) => state.user)
@@ -45,127 +39,162 @@ export function ChatPage() {
     setMessageText('')
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
   const selectedConv = conversations?.find((c) => c.id === selectedConversation)
 
   // Conversation list view
   if (!selectedConversation) {
     return (
-      <div className="pb-20">
-        <Navbar title="Czat" className="top-0 sticky z-10" />
+      <div className="min-h-screen pb-24">
+        {/* Header */}
+        <header className="px-6 pt-14 pb-6">
+          <h1 className="text-headline-lg">Czat</h1>
+          <span className="text-caption">Twoje konwersacje</span>
+        </header>
 
-        {isLoadingConversations ? (
-          <div className="flex items-center justify-center py-20">
-            <Preloader />
-          </div>
-        ) : !conversations || conversations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-            <span className="text-6xl mb-4">💬</span>
-            <h3 className="text-lg font-medium mb-2">Brak konwersacji</h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              Dopasuj się z kimś, aby rozpocząć czat
-            </p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {conversations.filter((conv) => conv.other_user).map((conv) => (
-              <button
-                key={conv.id}
-                onClick={() => setSelectedConversation(conv.id)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-800 active:bg-gray-100 dark:active:bg-gray-700 transition-colors text-left"
-              >
-                {/* Avatar */}
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center overflow-hidden">
-                    {conv.other_user.profile_photo_url ? (
-                      <img
-                        src={conv.other_user.profile_photo_url}
-                        alt={conv.other_user.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-xl font-medium text-brand-600">
-                        {getInitials(conv.other_user.name)}
-                      </span>
-                    )}
-                  </div>
-                  {conv.other_user.is_active && (
-                    <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900" />
+        {/* Content */}
+        <div className="px-6">
+          {isLoadingConversations ? (
+            <div className="flex items-center justify-center py-20">
+              <Spinner size="lg" />
+            </div>
+          ) : !conversations || conversations.length === 0 ? (
+            <div className="card-premium p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-[var(--color-bg)] flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="w-7 h-7 text-[var(--color-text-tertiary)]" />
+              </div>
+              <h3 className="text-headline-sm mb-1">Brak konwersacji</h3>
+              <p className="text-caption">Dopasuj się z kimś, aby rozpocząć czat</p>
+            </div>
+          ) : (
+            <div className="card-premium overflow-hidden">
+              {conversations.filter((conv) => conv.other_user).map((conv, index, arr) => (
+                <button
+                  key={conv.id}
+                  onClick={() => setSelectedConversation(conv.id)}
+                  className={cn(
+                    'w-full flex items-center gap-4 p-4 hover:bg-black/[0.02] active:bg-black/[0.04] transition-colors text-left',
+                    index !== arr.length - 1 && 'border-b border-black/[0.04]'
                   )}
-                </div>
+                >
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden">
+                      {conv.other_user.profile_photo_url ? (
+                        <img
+                          src={conv.other_user.profile_photo_url}
+                          alt={conv.other_user.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+                          <span className="text-lg font-light text-white/90">
+                            {getInitials(conv.other_user.name)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    {conv.other_user.is_active && (
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--color-accent-mint)] rounded-full border-2 border-white" />
+                    )}
+                  </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium truncate">
-                      {conv.other_user.name}
-                    </span>
-                    {conv.last_message_at && (
-                      <span className="text-xs text-gray-500">
-                        {formatRelativeTime(conv.last_message_at)}
-                      </span>
-                    )}
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-headline-sm truncate">{conv.other_user.name}</span>
+                      {conv.last_message_at && (
+                        <span className="text-caption flex-shrink-0 ml-2">
+                          {formatRelativeTime(conv.last_message_at)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-caption truncate">
+                        {conv.last_message_preview || 'Brak wiadomości'}
+                      </p>
+                      {conv.unread_count > 0 && (
+                        <span className="ml-2 min-w-[20px] h-5 px-1.5 rounded-full bg-[var(--color-brand)] text-white text-[11px] font-medium flex items-center justify-center flex-shrink-0">
+                          {conv.unread_count}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-500 truncate">
-                      {conv.last_message_preview || 'Brak wiadomości'}
-                    </p>
-                    {conv.unread_count > 0 && (
-                      <span className="ml-2 min-w-[20px] h-5 px-1.5 rounded-full bg-brand-500 text-white text-xs font-medium flex items-center justify-center">
-                        {conv.unread_count}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     )
   }
 
   // Chat view
   return (
-    <div className="flex flex-col h-screen pb-20">
+    <div className="flex flex-col h-screen">
       {/* Header */}
-      <Navbar
-        left={
+      <header className="px-6 pt-14 pb-4 bg-white/90 backdrop-blur-xl border-b border-black/[0.04]">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => setSelectedConversation(null)}
-            className="text-brand-500 font-medium"
+            className="w-10 h-10 rounded-full bg-[var(--color-bg)] flex items-center justify-center"
           >
-            Wróć
+            <ArrowLeft className="w-5 h-5 text-[var(--color-text-primary)]" />
           </button>
-        }
-        title={selectedConv?.other_user.name || 'Czat'}
-        subtitle={
-          selectedConv?.other_user.is_active
-            ? 'Aktywny teraz'
-            : selectedConv?.other_user.last_seen_at
-            ? `Ostatnio ${formatRelativeTime(selectedConv.other_user.last_seen_at)}`
-            : undefined
-        }
-        className="top-0 sticky z-10"
-      />
+
+          {/* User info */}
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 rounded-xl overflow-hidden">
+              {selectedConv?.other_user.profile_photo_url ? (
+                <img
+                  src={selectedConv.other_user.profile_photo_url}
+                  alt={selectedConv.other_user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+                  <span className="text-sm font-light text-white/90">
+                    {getInitials(selectedConv?.other_user.name || '')}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className="text-headline-sm block">{selectedConv?.other_user.name}</span>
+              <span className="text-caption">
+                {selectedConv?.other_user.is_active
+                  ? 'Aktywny teraz'
+                  : selectedConv?.other_user.last_seen_at
+                  ? `Ostatnio ${formatRelativeTime(selectedConv.other_user.last_seen_at)}`
+                  : ''}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto px-4 py-4">
         {isLoadingMessages ? (
           <div className="flex items-center justify-center py-20">
-            <Preloader />
+            <Spinner size="lg" />
           </div>
         ) : !messages || messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
             <span className="text-4xl mb-4">👋</span>
-            <p className="text-gray-500">Napisz pierwszą wiadomość!</p>
+            <p className="text-caption">Napisz pierwszą wiadomość!</p>
           </div>
         ) : (
-          <Messages>
-            <MessagesTitle>
-              <span className="text-gray-500 text-sm">
-                Początek konwersacji
-              </span>
-            </MessagesTitle>
+          <div className="space-y-3">
+            <div className="text-center py-4">
+              <span className="text-caption">Początek konwersacji</span>
+            </div>
 
             {messages.map((message, index) => {
               const isMyMessage = message.sender_id === user?.id
@@ -174,47 +203,77 @@ export function ChatPage() {
                 (index === 0 || messages[index - 1]?.sender_id !== message.sender_id)
 
               return (
-                <Message
+                <div
                   key={message.id}
-                  type={isMyMessage ? 'sent' : 'received'}
-                  first={showAvatar}
-                  last={
-                    index === messages.length - 1 ||
-                    messages[index + 1]?.sender_id !== message.sender_id
-                  }
-                  tail={
-                    index === messages.length - 1 ||
-                    messages[index + 1]?.sender_id !== message.sender_id
-                  }
-                  className="message-animate"
+                  className={cn(
+                    'flex gap-2',
+                    isMyMessage ? 'justify-end' : 'justify-start'
+                  )}
                 >
-                  <span slot="text">{message.content}</span>
-                </Message>
+                  {!isMyMessage && showAvatar && (
+                    <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                      {selectedConv?.other_user.profile_photo_url ? (
+                        <img
+                          src={selectedConv.other_user.profile_photo_url}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#7C3AED] via-[#A855F7] to-[#C084FC] flex items-center justify-center">
+                          <span className="text-xs font-light text-white/90">
+                            {getInitials(selectedConv?.other_user.name || '')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {!isMyMessage && !showAvatar && <div className="w-8" />}
+
+                  <div
+                    className={cn(
+                      'max-w-[75%] px-4 py-2.5 rounded-2xl text-body-sm',
+                      isMyMessage
+                        ? 'bg-[var(--color-brand)] text-white rounded-br-md'
+                        : 'bg-[var(--color-bg-card)] border border-black/[0.04] rounded-bl-md'
+                    )}
+                  >
+                    {message.content}
+                  </div>
+                </div>
               )
             })}
 
             <div ref={messagesEndRef} />
-          </Messages>
+          </div>
         )}
       </div>
 
       {/* Message input */}
-      <Messagebar
-        placeholder="Napisz wiadomość..."
-        value={messageText}
-        onInput={(e) => setMessageText(e.target.value)}
-        onSubmit={handleSend}
-        className="sticky bottom-20"
-      >
-        <button
-          slot="inner-end"
-          onClick={handleSend}
-          disabled={!messageText.trim() || sendMutation.isPending}
-          className="w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center disabled:opacity-50"
-        >
-          <Send className="w-5 h-5" />
-        </button>
-      </Messagebar>
+      <div className="p-4 bg-white/90 backdrop-blur-xl border-t border-black/[0.04]">
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Napisz wiadomość..."
+            className="flex-1 px-4 py-3 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!messageText.trim() || sendMutation.isPending}
+            className={cn(
+              'w-12 h-12 rounded-2xl flex items-center justify-center transition-all',
+              messageText.trim()
+                ? 'bg-[var(--color-brand)] text-white'
+                : 'bg-[var(--color-bg)] text-[var(--color-text-tertiary)]'
+            )}
+          >
+            <Send className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="h-[env(safe-area-inset-bottom)]" />
+      </div>
     </div>
   )
 }

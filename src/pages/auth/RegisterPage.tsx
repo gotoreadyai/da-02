@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { List, ListInput, Button, Preloader } from 'konsta/react'
+import { Spinner } from '@/components/ui/Spinner'
+import { User, Mail, Lock } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/lib/auth'
 
@@ -10,7 +11,7 @@ export function RegisterPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const register = useAuthStore((state) => state.register)
   const navigate = useNavigate()
 
@@ -46,58 +47,82 @@ export function RegisterPage() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-        Utwórz konto
-      </h2>
+      <h2 className="text-headline-lg text-center mb-6">Utwórz konto</h2>
 
-      <List strongIos insetIos className="-mx-4 -mt-4">
-        <ListInput
-          type="text"
-          placeholder="Imię"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          disabled={isLoading}
-        />
-        <ListInput
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isLoading}
-        />
-        <ListInput
-          type="password"
-          placeholder="Hasło"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={isLoading}
-        />
-        <ListInput
-          type="password"
-          placeholder="Potwierdź hasło"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          disabled={isLoading}
-        />
-      </List>
+      <div className="space-y-4 mb-6">
+        {/* Name */}
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <User className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </div>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Imię"
+            disabled={isLoading}
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all"
+          />
+        </div>
 
-      <div className="mt-6 space-y-4">
-        <Button
-          large
-          className="w-full !bg-brand-500 active:!bg-brand-600"
-          onClick={handleSubmit}
+        {/* Email */}
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <Mail className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </div>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            disabled={isLoading}
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all"
+          />
+        </div>
+
+        {/* Password */}
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <Lock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Hasło"
+            disabled={isLoading}
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all"
+          />
+        </div>
+
+        {/* Confirm Password */}
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <Lock className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+          </div>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Potwierdź hasło"
+            disabled={isLoading}
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-[var(--color-bg)] text-body-md outline-none focus:ring-2 focus:ring-[var(--color-brand-light)] transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <button
+          type="submit"
           disabled={isLoading}
+          className="w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center"
         >
-          {isLoading ? (
-            <Preloader size="w-5 h-5" className="text-white" />
-          ) : (
-            'Zarejestruj się'
-          )}
-        </Button>
+          {isLoading ? <Spinner size="sm" className="border-white border-t-transparent" /> : 'Zarejestruj się'}
+        </button>
 
-        <div className="text-center text-gray-500 dark:text-gray-400">
-          <span>Masz już konto? </span>
-          <Link to="/login" className="text-brand-500 font-medium hover:underline">
+        <div className="text-center text-caption">
+          <span className="text-[var(--color-text-secondary)]">Masz już konto? </span>
+          <Link to="/login" className="text-[var(--color-brand)] font-medium hover:underline">
             Zaloguj się
           </Link>
         </div>
