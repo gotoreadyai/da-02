@@ -19,9 +19,8 @@ export function AuthLayout() {
             {/* Logo */}
             <div className="text-center mb-10">
               <h1 className="text-[var(--color-text-primary)]" style={{
-                fontFamily: "'Playfair Display', serif",
                 fontSize: 'clamp(2.5rem, 8vw, 3.5rem)',
-                fontWeight: 500,
+                fontWeight: 700,
                 letterSpacing: '-0.02em'
               }}>
                 DanceMatch

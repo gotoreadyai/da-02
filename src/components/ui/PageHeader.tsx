@@ -13,8 +13,8 @@ export function PageHeader({ title, subtitle, rightElement, children, className 
     <header className={cn('px-5 pt-13 pb-5', className)}>
       <div className="flex items-center justify-between mb-5">
         <div>
-          {subtitle && <span className="text-caption text-xs block">{subtitle}</span>}
-          <h1 className="text-headline-lg">{title}</h1>
+          <h1 className="text-2xl font-bold mb-1">{title}</h1>
+          {subtitle && <span className="text-body-sm text-[var(--color-text-secondary)]">{subtitle}</span>}
         </div>
         {rightElement}
       </div>
