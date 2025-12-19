@@ -148,7 +148,7 @@ export function EventDetailPage() {
       </div>
 
       {/* Content */}
-      <div className={cn(LAYOUT.section, 'mt-5')}>
+      <div className={cn(LAYOUT.section, 'pt-5 bg-gradient-to-b from-black/60 via-transparent via-40% to-transparent')}>
         {/* Quick info row */}
         <div className={cn('card-premium flex items-center', LIST_ITEM.padding, ROUNDED.card)}>
           <div className={cn(ICON_CONTAINER.md, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>

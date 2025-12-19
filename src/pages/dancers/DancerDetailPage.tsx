@@ -147,7 +147,7 @@ export function DancerDetailPage() {
       </div>
 
       {/* Content */}
-      <div className={cn(LAYOUT.section, 'mt-5')}>
+      <div className={cn(LAYOUT.section, 'pt-5 bg-gradient-to-b from-black/60 via-transparent via-40% to-transparent')}>
         {/* Bio */}
         {dancer.bio && (
           <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed py-3">

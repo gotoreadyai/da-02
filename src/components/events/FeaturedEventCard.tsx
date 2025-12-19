@@ -20,16 +20,19 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
       className={cn(FEATURED_CARD.base, FEATURED_CARD.event)}
     >
       <div className={cn(
-        'relative aspect-[4/5] overflow-hidden shadow-md',
+        'relative aspect-[4/5] overflow-hidden shadow-xl',
         ROUNDED.card,
         `bg-gradient-to-br ${gradient}`
       )}>
+        {/* Top-left shine */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent via-30% to-transparent pointer-events-none" />
+
         {/* Date badge */}
-        <div className={cn('absolute top-2 left-2 bg-[var(--color-bg-card)]/95 px-3 py-2 shadow-sm', ROUNDED.pill)}>
+        <div className={cn('absolute top-2 left-2 bg-[var(--color-bg-card)] px-3 py-2 shadow-lg', ROUNDED.pill)}>
           <span className="text-xl font-bold text-[var(--color-text-primary)] leading-none block">
             {startDate.getDate()}
           </span>
-          <span className="text-[8px] font-bold text-[var(--color-brand)] uppercase">
+          <span className="text-[8px] font-bold text-[var(--color-text-secondary)] uppercase">
             {startDate.toLocaleDateString('pl-PL', { month: 'short' })}
           </span>
         </div>
@@ -42,7 +45,7 @@ export function FeaturedEventCard({ event, onPress }: FeaturedEventCardProps) {
         )}
 
         {/* Overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 via-black/20 via-60% to-transparent" />
 
         {/* Content */}
         <div className="absolute inset-x-0 bottom-0 p-3">
