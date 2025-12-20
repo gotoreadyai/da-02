@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { Spinner } from '@/components/ui/Spinner'
 import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
 import { DetailRow } from '@/components/events'
 import { ArrowLeft, MapPin, Users, Music, Calendar, Globe, Wallet, GraduationCap, Star, UserPlus, BookOpen, PartyPopper, Trophy, Mic } from 'lucide-react'
@@ -7,6 +6,7 @@ import { toast } from 'sonner'
 import { useEvent, useRegisterForEvent } from '@/features/events/api'
 import { formatDate, formatTime, getEventTypeLabel, getSkillLevelLabel, cn } from '@/lib/utils'
 import { getGradientForName, ROUNDED, BADGE, ICON_CONTAINER, ICON, GAP, LIST_ITEM, LAYOUT } from '@/lib/constants'
+import { Button, IconButton, Spinner } from '@/components/ui'
 
 const typeIcons: Record<string, React.ReactNode> = {
   lesson: <BookOpen className={ICON.md} />,
@@ -33,7 +33,7 @@ export function EventDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className={LAYOUT.loadingState}>
         <Spinner size="lg" />
       </div>
     )
@@ -42,20 +42,16 @@ export function EventDetailPage() {
   if (isError || !event) {
     return (
       <div className="px-5 pt-13">
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Wroc"
-          className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
-        >
+        <IconButton onClick={() => navigate(-1)} aria-label="Wroc" className="mb-5">
           <ArrowLeft className={ICON.md} />
-        </button>
+        </IconButton>
         <div className={cn('card-premium p-8 text-center', ROUNDED.card)}>
           <span className="text-4xl mb-3 block">😕</span>
           <h2 className="text-headline-md mb-1">Nie znaleziono</h2>
           <p className="text-caption mb-4">To wydarzenie nie istnieje</p>
-          <button onClick={() => navigate('/events')} className={cn('px-5 py-3 bg-[var(--color-brand)] text-white text-ui', ROUNDED.button)}>
+          <Button onClick={() => navigate('/events')}>
             Wroc
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -67,7 +63,7 @@ export function EventDetailPage() {
   const gradient = getGradientForName(event.title)
 
   return (
-    <div className="pb-36">
+    <div className={LAYOUT.pageWithLargeFAB}>
       {/* Hero */}
       <div className="relative h-[50vh] min-h-[320px] max-h-[400px]">
         <div className={cn('absolute inset-0', `bg-gradient-to-br ${gradient}`)}>
@@ -84,13 +80,9 @@ export function EventDetailPage() {
 
         {/* Top bar */}
         <div className="absolute top-0 left-0 right-0 pt-13 px-5 flex justify-between items-start">
-          <button
-            onClick={() => navigate(-1)}
-            aria-label="Wroc"
-            className={cn(ICON_CONTAINER.md, 'bg-black/20 backdrop-blur-md flex items-center justify-center', ROUNDED.avatarRounded)}
-          >
+          <IconButton onClick={() => navigate(-1)} aria-label="Wroc" className="bg-black/20 backdrop-blur-md">
             <ArrowLeft className={cn(ICON.md, 'text-white')} />
-          </button>
+          </IconButton>
 
           <div className={GAP.sm + ' flex'}>
             {event.price === 0 && (
@@ -214,16 +206,12 @@ export function EventDetailPage() {
       {/* Floating action */}
       {!isPast && (
         <FloatingActionBar>
-          <button
+          <Button
             disabled={isFull || registerMutation.isPending}
             onClick={handleRegister}
             aria-label={isFull ? 'Brak wolnych miejsc' : 'Zapisz sie na wydarzenie'}
-            className={cn(
-              'w-full flex items-center justify-center py-4 font-semibold shadow-lg transition-all max-w-md',
-              GAP.sm,
-              ROUNDED.button,
-              isFull ? 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]' : 'bg-[var(--color-brand)] text-white'
-            )}
+            variant={isFull ? 'secondary' : 'primary'}
+            className="max-w-md"
           >
             {registerMutation.isPending ? (
               <Spinner size="sm" className="border-white border-t-transparent" />
@@ -232,7 +220,7 @@ export function EventDetailPage() {
             ) : (
               <>
                 <Calendar className={ICON.md} />
-                <span className="text-sm">Zapisz sie</span>
+                <span>Zapisz sie</span>
                 {event.price > 0 && (
                   <span className={cn('ml-1 px-2 py-0.5 bg-white/20 text-xs', ROUNDED.circle)}>
                     {event.price} {event.currency}
@@ -240,7 +228,7 @@ export function EventDetailPage() {
                 )}
               </>
             )}
-          </button>
+          </Button>
         </FloatingActionBar>
       )}
     </div>

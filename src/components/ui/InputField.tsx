@@ -3,9 +3,10 @@ import { INPUT } from '@/lib/constants'
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode
+  rightElement?: React.ReactNode
 }
 
-export function InputField({ icon, className, ...props }: InputFieldProps) {
+export function InputField({ icon, rightElement, className, ...props }: InputFieldProps) {
   return (
     <div className="relative">
       {icon && (
@@ -17,10 +18,16 @@ export function InputField({ icon, className, ...props }: InputFieldProps) {
         className={cn(
           INPUT.base,
           icon ? INPUT.withIcon : INPUT.standard,
+          rightElement && 'pr-14',
           className
         )}
         {...props}
       />
+      {rightElement && (
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          {rightElement}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spinner } from '@/components/ui'
+import { Spinner, IconButton, InputField, PageHeader } from '@/components/ui'
 import { FeaturedDancerCard, DancerRow } from '@/components/dancers'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useDancers, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { cn } from '@/lib/utils'
-import { ROUNDED, ICON_CONTAINER, ICON, LAYOUT, getGradientForStatus } from '@/lib/constants'
+import { ROUNDED, ICON, LAYOUT, getGradientForStatus } from '@/lib/constants'
 import type { PublicDancer } from '@/types/database'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { EffectCards } from 'swiper/modules'
@@ -40,10 +40,11 @@ export function DancersPage() {
 
   return (
     <div className="overflow-x-hidden">
+      <PageHeader title="Tancerze" subtitle="Znajdz partnera do tanca" />
 
       {/* Featured - Tinder Style Slider */}
       {dancers.length > 0 && (
-        <section className="mb-6 pt-16 relative">
+        <section className={cn(LAYOUT.section, 'relative')}>
           {/* Ambient light - góra */}
           <div
             className={cn(
@@ -78,7 +79,7 @@ export function DancersPage() {
             }}
           />
 
-          <div className="relative flex justify-center py-6">
+          <div className="relative flex justify-center">
             <Swiper
               effect="cards"
               grabCursor
@@ -111,25 +112,27 @@ export function DancersPage() {
         <h2 className={cn('text-headline-sm', LAYOUT.sectionHeadingMargin)}>W pobliżu</h2>
 
         {/* Search */}
-        <div className="relative mb-4">
-          <Search className={cn('absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]', ICON.sm)} />
-          <input
+        <div className="mb-4">
+          <InputField
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Szukaj..."
-            className={cn('input-premium w-full pl-11 pr-12 py-3 text-sm', ROUNDED.input)}
+            icon={<Search className={ICON.sm} />}
+            rightElement={
+              <IconButton
+                aria-label="Filtry wyszukiwania"
+                size="sm"
+                className="bg-[var(--color-brand)] text-white"
+              >
+                <SlidersHorizontal className={ICON.xs} />
+              </IconButton>
+            }
           />
-          <button
-            aria-label="Filtry wyszukiwania"
-            className={cn('absolute right-2 top-1/2 -translate-y-1/2 bg-[var(--color-brand)] flex items-center justify-center', ICON_CONTAINER.sm)}
-          >
-            <SlidersHorizontal className={cn(ICON.xs, 'text-white')} />
-          </button>
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-16">
+          <div className={LAYOUT.loadingState}>
             <Spinner size="lg" />
           </div>
         ) : isError ? (

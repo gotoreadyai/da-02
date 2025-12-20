@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Spinner, InputField } from '@/components/ui'
+import { Spinner, InputField, Button } from '@/components/ui'
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/lib/auth'
-import { SPACING, BUTTON, ICON, STATE_ICON } from '@/lib/constants'
+import { SPACING, ICON, STATE_ICON } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 export function ForgotPasswordPage() {
@@ -45,7 +45,7 @@ export function ForgotPasswordPage() {
           Wysłaliśmy link do resetowania hasła na adres {email}
         </p>
         <Link to="/login">
-          <button className={BUTTON.primary}>Wróć do logowania</button>
+          <Button>Wróć do logowania</Button>
         </Link>
       </div>
     )
@@ -70,9 +70,9 @@ export function ForgotPasswordPage() {
       </div>
 
       <div className={SPACING.stack}>
-        <button type="submit" disabled={isLoading} className={BUTTON.primary}>
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? <Spinner size="sm" className="border-white border-t-transparent" /> : 'Wyślij link'}
-        </button>
+        </Button>
 
         <Link
           to="/login"

@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import { User, Music, LogOut, Award, Calendar, Heart, Users, Star } from 'lucide-react'
 import { useAuthStore } from '@/lib/auth'
 import { useMyProfile, useMyDanceStyles } from '@/features/profile/api'
-import { Avatar, PageHeader, ListRow, StatCard } from '@/components/ui'
+import { Avatar, PageHeader, ListRow, StatCard, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { ROUNDED, BUTTON, ICON } from '@/lib/constants'
+import { ROUNDED, ICON, LAYOUT } from '@/lib/constants'
 
 export function ProfilePage() {
   const navigate = useNavigate()
@@ -58,7 +58,7 @@ export function ProfilePage() {
         </div>
       </PageHeader>
 
-      <section className="px-5 mb-5">
+      <section className={LAYOUT.section}>
         <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
           {menuItems.map((item, index) => (
             <ListRow
@@ -74,11 +74,11 @@ export function ProfilePage() {
         </div>
       </section>
 
-      <section className="px-5">
-        <button onClick={handleLogout} className={BUTTON.danger}>
-          <LogOut className={cn(ICON.md, 'text-red-500')} />
-          <span className="text-headline-sm text-red-500">Wyloguj</span>
-        </button>
+      <section className={LAYOUT.sectionLast}>
+        <Button variant="secondary" onClick={handleLogout}>
+          <LogOut className={ICON.md} />
+          Wyloguj
+        </Button>
       </section>
     </div>
   )

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Spinner, InputField } from '@/components/ui'
+import { Spinner, InputField, Button } from '@/components/ui'
 import { User, Mail, Lock } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/lib/auth'
-import { SPACING, BUTTON, ICON } from '@/lib/constants'
+import { SPACING, ICON } from '@/lib/constants'
 
 export function RegisterPage() {
   const [name, setName] = useState('')
@@ -86,9 +86,9 @@ export function RegisterPage() {
       </div>
 
       <div className={SPACING.stack}>
-        <button type="submit" disabled={isLoading} className={BUTTON.primary}>
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? <Spinner size="sm" className="border-white border-t-transparent" /> : 'Zarejestruj się'}
-        </button>
+        </Button>
 
         <div className="text-center text-caption">
           <span className="text-[var(--color-text-secondary)]">Masz już konto? </span>

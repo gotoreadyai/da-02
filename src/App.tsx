@@ -20,6 +20,8 @@ import { DancersPage } from '@/pages/dancers/DancersPage'
 import { DancerDetailPage } from '@/pages/dancers/DancerDetailPage'
 import { EventsPage } from '@/pages/events/EventsPage'
 import { EventDetailPage } from '@/pages/events/EventDetailPage'
+import { EditEventPage } from '@/pages/events/EditEventPage'
+import { MyEventsPage } from '@/pages/events/MyEventsPage'
 import { ChatPage } from '@/pages/chat/ChatPage'
 import { ProfilePage } from '@/pages/profile/ProfilePage'
 import { EditProfilePage } from '@/pages/profile/EditProfilePage'
@@ -122,7 +124,9 @@ export function App() {
               <Route path="/dancers" element={<DancersPage />} />
               <Route path="/dancers/:id" element={<DancerDetailPage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/my" element={<MyEventsPage />} />
               <Route path="/events/:id" element={<EventDetailPage />} />
+              <Route path="/events/:id/edit" element={<EditEventPage />} />
               <Route path="/chat" element={<ChatPage />} />
               <Route path="/chat/:conversationId" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />

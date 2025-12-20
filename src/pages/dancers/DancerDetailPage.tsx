@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { Spinner } from '@/components/ui/Spinner'
 import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
 import { ArrowLeft, MapPin, Ruler, Music, Award, Heart, MessageCircle, Sparkles, Crown } from 'lucide-react'
 import { useDancer, useLikeDancer, useUnlikeDancer } from '@/features/dancers/api'
 import { useGetOrCreateConversation } from '@/features/chat/api'
 import { cn, getSkillLevelLabel, getInitials } from '@/lib/utils'
 import { getGradientForName, ROUNDED, ICON, ICON_CONTAINER, LIST_ITEM, BADGE, LAYOUT, GAP } from '@/lib/constants'
+import { Button, IconButton, Spinner } from '@/components/ui'
 
 export function DancerDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -36,7 +36,7 @@ export function DancerDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className={LAYOUT.loadingState}>
         <Spinner size="lg" />
       </div>
     )
@@ -45,20 +45,16 @@ export function DancerDetailPage() {
   if (isError || !dancer) {
     return (
       <div className="px-5 pt-13">
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Wroc"
-          className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-sm flex items-center justify-center mb-5', ROUNDED.avatarRounded)}
-        >
+        <IconButton onClick={() => navigate(-1)} aria-label="Wroc" className="mb-5">
           <ArrowLeft className={ICON.md} />
-        </button>
+        </IconButton>
         <div className={cn('card-premium p-8 text-center', ROUNDED.card)}>
           <span className="text-4xl mb-3 block">😕</span>
           <h2 className="text-headline-md mb-1">Nie znaleziono</h2>
           <p className="text-caption mb-4">Ten profil nie istnieje</p>
-          <button onClick={() => navigate('/dancers')} className={cn('px-5 py-3 bg-[var(--color-brand)] text-white text-ui', ROUNDED.button)}>
+          <Button onClick={() => navigate('/dancers')}>
             Wroc
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -67,7 +63,7 @@ export function DancerDetailPage() {
   const gradient = getGradientForName(dancer.name)
 
   return (
-    <div className="pb-36">
+    <div className={LAYOUT.pageWithLargeFAB}>
       {/* Hero */}
       <div className="relative h-[75vh] min-h-[480px] max-h-[640px]">
         {dancer.profile_photo_url ? (
@@ -87,13 +83,9 @@ export function DancerDetailPage() {
 
         {/* Top bar */}
         <div className="absolute top-0 left-0 right-0 pt-13 px-5 flex justify-between items-start">
-          <button
-            onClick={() => navigate(-1)}
-            aria-label="Wroc"
-            className={cn(ICON_CONTAINER.md, 'bg-black/20 backdrop-blur-md flex items-center justify-center', ROUNDED.avatarRounded)}
-          >
+          <IconButton onClick={() => navigate(-1)} aria-label="Wroc" className="bg-black/20 backdrop-blur-md">
             <ArrowLeft className={cn(ICON.md, 'text-white')} />
-          </button>
+          </IconButton>
 
           {/* Badges */}
           <div className={cn('flex flex-col', GAP.sm)}>
@@ -188,38 +180,30 @@ export function DancerDetailPage() {
       {/* Floating actions */}
       <FloatingActionBar>
         <div className={cn('flex max-w-md w-full', GAP.md)} role="group" aria-label="Akcje profilu">
-          <button
+          <Button
             onClick={handleLike}
             disabled={likeMutation.isPending || unlikeMutation.isPending}
             aria-label={dancer.i_liked ? 'Cofnij polubienie' : 'Polub'}
             aria-pressed={dancer.i_liked}
-            className={cn(
-              'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
-              GAP.sm,
-              ROUNDED.button,
-              dancer.i_liked ? 'bg-[var(--color-accent-hot)] text-white' : 'bg-[var(--color-bg-card)] text-[var(--color-text-primary)]'
-            )}
+            variant={dancer.i_liked ? 'primary' : 'secondary'}
+            className={cn('flex-1', dancer.i_liked && 'bg-[var(--color-accent-hot)]')}
           >
             <Heart className={cn(ICON.md, dancer.i_liked && 'fill-current')} />
-            <span className="text-sm">{dancer.i_liked ? 'Lubisz' : 'Polub'}</span>
-          </button>
+            <span>{dancer.i_liked ? 'Lubisz' : 'Polub'}</span>
+          </Button>
 
-          <button
+          <Button
             disabled={!dancer.is_matched || getOrCreateConversation.isPending}
             onClick={handleMessage}
             aria-label={dancer.is_matched ? 'Napisz wiadomosc' : 'Najpierw musisz sie dopasowac'}
-            className={cn(
-              'flex-1 flex items-center justify-center py-4 font-semibold shadow-lg transition-all',
-              GAP.sm,
-              ROUNDED.button,
-              dancer.is_matched ? 'bg-[var(--color-brand)] text-white' : 'bg-[var(--color-bg-subtle)] text-[var(--color-text-tertiary)]'
-            )}
+            variant={dancer.is_matched ? 'primary' : 'secondary'}
+            className="flex-1"
           >
             <MessageCircle className={ICON.md} />
-            <span className="text-sm">
+            <span>
               {getOrCreateConversation.isPending ? 'Otwieranie...' : dancer.is_matched ? 'Napisz' : 'Dopasuj'}
             </span>
-          </button>
+          </Button>
         </div>
       </FloatingActionBar>
     </div>

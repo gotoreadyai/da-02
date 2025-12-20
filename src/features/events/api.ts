@@ -192,3 +192,86 @@ export function useRegisterForEvent() {
     },
   })
 }
+
+// Fetch my events (as organizer)
+async function fetchMyEvents(): Promise<EventWithCounts[]> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { data, error } = await supabase
+    .from('v_events_with_counts')
+    .select('*')
+    .eq('organizer_id', user.id)
+    .order('start_at', { ascending: false })
+
+  if (error) throw error
+  return data || []
+}
+
+// Update event
+interface UpdateEventData extends Partial<CreateEventData> {
+  id: string
+}
+
+async function updateEvent({ id, ...data }: UpdateEventData): Promise<Event> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { data: event, error } = await supabase
+    .from('events')
+    .update(data)
+    .eq('id', id)
+    .eq('organizer_id', user.id) // Security: only owner can update
+    .select()
+    .single()
+
+  if (error) throw error
+  return event
+}
+
+// Delete event
+async function deleteEvent(id: string): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { error } = await supabase
+    .from('events')
+    .delete()
+    .eq('id', id)
+    .eq('organizer_id', user.id) // Security: only owner can delete
+
+  if (error) throw error
+}
+
+// Hooks for my events
+export function useMyEvents() {
+  return useQuery({
+    queryKey: [...eventsKeys.all, 'my'] as const,
+    queryFn: fetchMyEvents,
+  })
+}
+
+export function useUpdateEvent() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateEvent,
+    onSuccess: (event) => {
+      queryClient.invalidateQueries({ queryKey: eventsKeys.detail(event.id) })
+      queryClient.invalidateQueries({ queryKey: eventsKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: [...eventsKeys.all, 'my'] })
+    },
+  })
+}
+
+export function useDeleteEvent() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventsKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: [...eventsKeys.all, 'my'] })
+    },
+  })
+}

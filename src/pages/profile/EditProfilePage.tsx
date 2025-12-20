@@ -1,13 +1,11 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spinner } from '@/components/ui/Spinner'
-import { Avatar } from '@/components/ui/Avatar'
-import { FloatingActionBar } from '@/components/ui/FloatingActionBar'
+import { Spinner, Avatar, FloatingActionBar, Button, IconButton, FormRow, FormInput } from '@/components/ui'
 import { ArrowLeft, Camera, User, MapPin, Ruler, FileText, Shield, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
 import { useMyProfile, useUpdateProfile, useUploadProfilePhoto } from '@/features/profile/api'
 import { cn } from '@/lib/utils'
-import { LAYOUT, ROUNDED, LIST_ITEM, ICON_CONTAINER, ICON, TOGGLE, BUTTON, GAP } from '@/lib/constants'
+import { LAYOUT, ROUNDED, LIST_ITEM, ICON_CONTAINER, ICON, TOGGLE, GAP } from '@/lib/constants'
 
 export function EditProfilePage() {
   const navigate = useNavigate()
@@ -75,17 +73,13 @@ export function EditProfilePage() {
   if (!profile) return null
 
   return (
-    <div className="pb-32">
+    <div className={LAYOUT.pageWithFAB}>
       {/* Header */}
       <header className={LAYOUT.header}>
         <div className={cn('flex items-center mb-5', GAP.lg)}>
-          <button
-            onClick={() => navigate(-1)}
-            aria-label="Wroc"
-            className={cn(ICON_CONTAINER.md, 'bg-[var(--color-bg-card)] shadow-md flex items-center justify-center', ROUNDED.circle)}
-          >
+          <IconButton onClick={() => navigate(-1)} aria-label="Wroc">
             <ArrowLeft className={ICON.md} />
-          </button>
+          </IconButton>
           <h1 className="text-headline-lg">Edytuj profil</h1>
         </div>
 
@@ -100,13 +94,13 @@ export function EditProfilePage() {
                 </div>
               )}
             </div>
-            <button
+            <IconButton
               onClick={() => fileInputRef.current?.click()}
               aria-label="Zmien zdjecie profilowe"
-              className={cn(ICON_CONTAINER.md, 'absolute bottom-0 right-0 bg-[var(--color-brand)] text-white flex items-center justify-center shadow-lg', ROUNDED.circle)}
+              className="absolute bottom-0 right-0 bg-[var(--color-brand)] text-white shadow-lg"
             >
               <Camera className={ICON.md} />
-            </button>
+            </IconButton>
           </div>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
           <p className="text-caption mt-3">Dotknij, aby zmienic zdjecie</p>
@@ -117,45 +111,18 @@ export function EditProfilePage() {
       <section className={LAYOUT.section}>
         <h2 className={cn('text-headline-md', LAYOUT.sectionHeadingMargin)}>Podstawowe informacje</h2>
         <div className={cn('card-premium overflow-hidden', ROUNDED.card)}>
-          <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-              <User className={cn(ICON.md, 'text-[var(--color-brand)]')} />
-            </div>
-            <div className="flex-1">
-              <label className="text-caption block mb-1">Imie</label>
-              <input type="text" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} placeholder="Twoje imie" className="w-full text-headline-sm bg-transparent outline-none" />
-            </div>
-          </div>
-
-          <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-              <User className={cn(ICON.md, 'text-[var(--color-brand)]')} />
-            </div>
-            <div className="flex-1">
-              <label className="text-caption block mb-1">Wiek</label>
-              <input type="number" value={formData.age} onChange={(e) => handleChange('age', e.target.value)} placeholder="np. 25" className="w-full text-headline-sm bg-transparent outline-none" />
-            </div>
-          </div>
-
-          <div className={cn('flex items-center', LIST_ITEM.padding, LIST_ITEM.border)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-              <Ruler className={cn(ICON.md, 'text-[var(--color-brand)]')} />
-            </div>
-            <div className="flex-1">
-              <label className="text-caption block mb-1">Wzrost (cm)</label>
-              <input type="number" value={formData.height} onChange={(e) => handleChange('height', e.target.value)} placeholder="np. 175" className="w-full text-headline-sm bg-transparent outline-none" />
-            </div>
-          </div>
-
-          <div className={cn('flex items-center', LIST_ITEM.padding)}>
-            <div className={cn(ICON_CONTAINER.lg, 'bg-[var(--color-brand)]/20 flex items-center justify-center')}>
-              <MapPin className={cn(ICON.md, 'text-[var(--color-brand)]')} />
-            </div>
-            <div className="flex-1">
-              <label className="text-caption block mb-1">Miasto</label>
-              <input type="text" value={formData.city} onChange={(e) => handleChange('city', e.target.value)} placeholder="np. Warszawa" className="w-full text-headline-sm bg-transparent outline-none" />
-            </div>
-          </div>
+          <FormRow icon={<User />} label="Imie">
+            <FormInput type="text" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} placeholder="Twoje imie" />
+          </FormRow>
+          <FormRow icon={<User />} label="Wiek">
+            <FormInput type="number" value={formData.age} onChange={(e) => handleChange('age', e.target.value)} placeholder="np. 25" />
+          </FormRow>
+          <FormRow icon={<Ruler />} label="Wzrost (cm)">
+            <FormInput type="number" value={formData.height} onChange={(e) => handleChange('height', e.target.value)} placeholder="np. 175" />
+          </FormRow>
+          <FormRow icon={<MapPin />} label="Miasto" isLast>
+            <FormInput type="text" value={formData.city} onChange={(e) => handleChange('city', e.target.value)} placeholder="np. Warszawa" />
+          </FormRow>
         </div>
       </section>
 
@@ -219,9 +186,9 @@ export function EditProfilePage() {
 
       {/* Fixed bottom save button */}
       <FloatingActionBar>
-        <button onClick={handleSave} disabled={updateMutation.isPending} className={cn(BUTTON.primary, 'max-w-md')}>
+        <Button onClick={handleSave} disabled={updateMutation.isPending} className="max-w-md">
           {updateMutation.isPending ? 'Zapisywanie...' : 'Zapisz zmiany'}
-        </button>
+        </Button>
       </FloatingActionBar>
     </div>
   )

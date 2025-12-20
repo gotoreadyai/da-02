@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Spinner, PageHeader } from '@/components/ui'
-import { FeaturedEventCard, EventRow } from '@/components/events'
-import { Calendar, BookOpen, GraduationCap, PartyPopper, Search } from 'lucide-react'
+import { Spinner, PageHeader, IconButton, FilterPill, InputField, Button } from '@/components/ui'
+import { FeaturedEventCard, EventRow, CreateEventSheet } from '@/components/events'
+import { Calendar, BookOpen, GraduationCap, PartyPopper, Search, Plus } from 'lucide-react'
 import { useEvents } from '@/features/events/api'
 import { cn } from '@/lib/utils'
 import { ROUNDED, ICON, LAYOUT } from '@/lib/constants'
+
 
 const eventTypes = [
   { value: 'all', label: 'Wszystkie', icon: Calendar },
@@ -18,6 +19,7 @@ export function EventsPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [eventType, setEventType] = useState('all')
+  const [showCreateSheet, setShowCreateSheet] = useState(false)
 
   const { data, isLoading, isError } = useEvents({
     search: search || undefined,
@@ -28,44 +30,42 @@ export function EventsPage() {
   const events = data?.data || []
 
   return (
-    <div>
-      <PageHeader title="Wydarzenia" subtitle="Odkryj w Twojej okolicy">
+    <div className={LAYOUT.pageWithNav}>
+      <PageHeader
+        title="Wydarzenia"
+        subtitle="Odkryj w Twojej okolicy"
+        rightElement={
+          <IconButton
+            onClick={() => setShowCreateSheet(true)}
+            aria-label="Utworz wydarzenie"
+            className="bg-[var(--color-brand)] text-white"
+          >
+            <Plus className={ICON.md} />
+          </IconButton>
+        }
+      >
         {/* Search */}
-        <div className={cn('relative', LAYOUT.sectionHeadingMargin)}>
-          <Search className={cn('absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]', ICON.sm)} />
-          <input
+        <div className={LAYOUT.sectionHeadingMargin}>
+          <InputField
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Szukaj..."
-            className={cn('input-premium w-full pl-11 py-3 text-sm', ROUNDED.input)}
+            icon={<Search className={ICON.sm} />}
           />
         </div>
 
         {/* Filter pills */}
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 scrollbar-hide">
-          {eventTypes.map((type) => {
-            const Icon = type.icon
-            const isActive = eventType === type.value
-
-            return (
-              <button
-                key={type.value}
-                onClick={() => setEventType(type.value)}
-                aria-pressed={isActive}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 text-xs font-medium whitespace-nowrap transition-all',
-                  ROUNDED.pill,
-                  isActive
-                    ? 'bg-[var(--color-brand)] text-white'
-                    : 'bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] border border-white/[0.06]'
-                )}
-              >
-                <Icon className={ICON.xs} />
-                {type.label}
-              </button>
-            )
-          })}
+        <div className={cn(LAYOUT.horizontalScrollWrapper, 'gap-2')}>
+          {eventTypes.map((type) => (
+            <FilterPill
+              key={type.value}
+              label={type.label}
+              icon={type.icon}
+              isActive={eventType === type.value}
+              onClick={() => setEventType(type.value)}
+            />
+          ))}
         </div>
       </PageHeader>
 
@@ -76,7 +76,7 @@ export function EventsPage() {
             <h2 className="text-headline-sm">Polecane</h2>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
+          <div className={cn(LAYOUT.horizontalScrollWrapper, 'gap-3 pb-2')}>
             {events.slice(0, 4).map((event) => (
               <FeaturedEventCard
                 key={event.id}
@@ -89,14 +89,14 @@ export function EventsPage() {
       )}
 
       {/* List */}
-      <section className={LAYOUT.sectionLast}>
+      <section className={LAYOUT.section}>
         <div className={cn('flex items-center justify-between', LAYOUT.sectionHeadingMargin)}>
           <h2 className="text-headline-sm">Nadchodzace</h2>
           <span className="text-caption text-xs">{data?.count || 0}</span>
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-16">
+          <div className={LAYOUT.loadingState}>
             <Spinner size="lg" />
           </div>
         ) : isError ? (
@@ -124,6 +124,15 @@ export function EventsPage() {
           </div>
         )}
       </section>
+
+      {/* Moje wydarzenia button */}
+      <section className={LAYOUT.sectionLast}>
+        <Button variant="secondary" onClick={() => navigate('/events/my')}>
+          Moje wydarzenia
+        </Button>
+      </section>
+
+      <CreateEventSheet isOpen={showCreateSheet} onClose={() => setShowCreateSheet(false)} />
     </div>
   )
 }

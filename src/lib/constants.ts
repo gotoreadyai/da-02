@@ -49,6 +49,7 @@ export function getGradientForStatus(dancer: DancerStatus): string {
 export const LAYOUT = {
   // Page headers - MANDATORY for all pages
   header: 'px-5 pt-13 pb-5',
+  headerCompact: 'px-5 pt-13 pb-3',
   // Sections
   section: 'px-5 mb-5',
   sectionLast: 'px-5',
@@ -56,6 +57,17 @@ export const LAYOUT = {
   sectionHeadingMargin: 'mb-3',
   // Horizontal scroll containers
   horizontalScroll: 'gap-3 px-5',
+  horizontalScrollWrapper: 'flex overflow-x-auto pb-1 -mx-5 px-5 scrollbar-hide',
+  // Page bottom padding (for floating action bars)
+  pageWithFAB: 'pb-32',
+  pageWithNav: 'pb-20',
+  pageWithLargeFAB: 'pb-36',
+  // Loading/empty states
+  loadingState: 'flex items-center justify-center py-16',
+  emptyState: 'py-20',
+  // Form sections
+  formSection: 'space-y-6 pt-6',
+  formSectionPadded: 'space-y-6 pt-6 px-5',
 } as const
 
 // Rounded corners - STANDARDIZED
@@ -142,9 +154,9 @@ export const INPUT = {
 
 // Buttons - STANDARDIZED
 export const BUTTON = {
-  primary: 'w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center',
-  secondary: 'w-full py-4 rounded-2xl bg-[var(--color-bg)] text-[var(--color-text-primary)] text-headline-sm transition-all',
-  danger: 'w-full p-4 rounded-2xl bg-red-500/10 hover:bg-red-500/15 active:bg-red-500/20 transition-colors flex items-center justify-center gap-3',
+  primary: 'w-full py-4 rounded-2xl bg-[var(--color-brand)] text-white text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2',
+  secondary: 'w-full py-4 rounded-2xl bg-gray-500/20 text-[var(--color-text-primary)] text-headline-sm transition-all disabled:text-[var(--color-text-tertiary)] flex items-center justify-center gap-2',
+  danger: 'w-full py-4 rounded-2xl bg-red-500/10 text-red-400 text-headline-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2',
 } as const
 
 // Avatar sizes in context - STANDARDIZED
